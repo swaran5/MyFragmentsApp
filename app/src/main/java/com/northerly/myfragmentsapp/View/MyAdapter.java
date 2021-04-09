@@ -22,7 +22,7 @@ import static com.northerly.myfragmentsapp.R.layout.item_view;
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
 
     public interface OnItemClickListener {
-        void onItemClick(String fname, String lname , String email);
+        void onItemClick(String fname, String lname , String email, String url);
     }
     private OnItemClickListener mListener;
 
@@ -92,7 +92,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
                     if (listener != null){
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION){
-                            listener.onItemClick(firstName, lastName, email);
+                            listener.onItemClick(firstName, lastName, email, imgUrl);
 
                         }
                     }
