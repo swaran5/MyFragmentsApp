@@ -6,9 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,7 +22,9 @@ import com.northerly.myfragmentsapp.Model.Endpoints;
 import com.northerly.myfragmentsapp.Model.PojoClass.Root;
 import com.northerly.myfragmentsapp.Model.ServiceBuilder;
 import com.northerly.myfragmentsapp.R;
+import com.northerly.myfragmentsapp.View.MainActivity;
 import com.northerly.myfragmentsapp.View.MyAdapter;
+import com.northerly.myfragmentsapp.ViewModel.HomeViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,53 +35,55 @@ import retrofit2.Response;
 public class HomeFragment extends Fragment {
     public Context context = this.getContext();
     private MyAdapter myAdapter;
+    private RecyclerView recyclerView;
+    HomeViewModel homeViewModel;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
-        RecyclerView recyclerView = v.findViewById(R.id.recyclerView);
+
+        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
+        recyclerView = v.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            homeViewModel.getUsers();
 
-        Endpoints request = ServiceBuilder.createService(Endpoints.class);
-        Call<Root> call = request.getUsers("1");
-
-        call.enqueue(new retrofit2.Callback<Root>() {
-            @Override
-            public void onResponse(Call<Root> call, Response<Root> response) {
-                response.body();
-                List<Data> Users = response.body().getData();
-
-                myAdapter = new MyAdapter(Users);
-                recyclerView.setAdapter(myAdapter);
-
-
-                myAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(String fname, String lname, String email, String url) {
-
-                        Bundle bundle = new Bundle();
-                        bundle.putString("key1", fname);
-                        bundle.putString("key2", lname);
-                        bundle.putString("key3", email);
-                        bundle.putString("key4", url);
-
-                        UserFragment userFragment = new UserFragment();
-                        userFragment.setArguments(bundle);
-                        getFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.fragment_container,userFragment)
-                                .addToBackStack(null)
-                                .commit();
-                    }
-                });
-
-            }
-
-            @Override
-            public void onFailure(Call<Root> call, Throwable t) {
-
-            }
-        });
         return v;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        homeViewModel.Users.observe(getViewLifecycleOwner(), new Observer<List<Data>>() {
+                @Override
+                public void onChanged(List<Data> data) {
+
+                    myAdapter = new MyAdapter(data);
+                    recyclerView.setAdapter(myAdapter);
+                    myAdapter.notifyDataSetChanged();
+
+                    myAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(String fname, String lname, String email, String url) {
+
+                            Bundle bundle = new Bundle();
+                            bundle.putString("key1", fname);
+                            bundle.putString("key2", lname);
+                            bundle.putString("key3", email);
+                            bundle.putString("key4", url);
+
+                            UserFragment userFragment = new UserFragment();
+                            userFragment.setArguments(bundle);
+                            getFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.fragment_container, userFragment)
+                                    .addToBackStack(null)
+                                    .commit();
+                        }
+                    });
+                }
+            });
+
     }
 }
