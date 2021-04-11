@@ -65,13 +65,10 @@ public class HomeFragment extends Fragment {
 
                     myAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
                         @Override
-                        public void onItemClick(String fname, String lname, String email, String url) {
+                        public void onItemClick(int id) {
 
                             Bundle bundle = new Bundle();
-                            bundle.putString("key1", fname);
-                            bundle.putString("key2", lname);
-                            bundle.putString("key3", email);
-                            bundle.putString("key4", url);
+                            bundle.putInt("key1", id);
 
                             UserFragment userFragment = new UserFragment();
                             userFragment.setArguments(bundle);

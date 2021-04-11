@@ -22,7 +22,7 @@ import static com.northerly.myfragmentsapp.R.layout.item_view;
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
 
     public interface OnItemClickListener {
-        void onItemClick(String fname, String lname , String email, String url);
+        void onItemClick(int id);
     }
     private OnItemClickListener mListener;
 
@@ -81,6 +81,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
             String lastName = users.get(position).getLast_name();
             String imgUrl = users.get(position).getAvatar();
             String email = users.get(position).getEmail();
+            int id = users.get(position).getId();
 
             Picasso.get().load(imgUrl).into(imgView);
             firstname.setText("First Name : " +firstName);
@@ -92,7 +93,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
                     if (listener != null){
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION){
-                            listener.onItemClick(firstName, lastName, email, imgUrl);
+                            listener.onItemClick(id);
 
                         }
                     }
