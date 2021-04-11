@@ -4,11 +4,97 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="40dp"
+        android:textSize="20dp"
         android:text="Add User"
         android:gravity="center"
+        android:textStyle="bold"
+        />
+
+    <EditText
+        android:layout_below="@+id/textView"
+        android:id="@+id/editTextName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="Enter Name"
+        android:layout_margin="15dp"
+        />
+    <EditText
+        android:layout_below="@+id/editTextName"
+        android:id="@+id/editTextJob"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="Enter Your Job"
+        android:layout_margin="15dp"
+        />
+
+    <Button
+        android:id="@+id/add_button"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/editTextJob"
+        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add User"
+        android:textAllCaps="false"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/addTextView"
+        android:textSize="20dp"
+        android:text="Posted Data :"
+        android:textStyle="bold"
+        android:layout_below="@id/add_button"
+        android:layout_marginTop="10dp"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/addTextViewName"
+        android:textSize="20dp"
+        android:gravity="center"
+        android:layout_below="@id/addTextView"
+        android:layout_marginTop="10dp"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/addTextViewJob"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/addTextViewName"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/addTextViewId"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/addTextViewJob"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/addTextViewCreatedOn"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/addTextViewId"
         />
 
 </RelativeLayout>
