@@ -13,18 +13,22 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.northerly.myfragmentsapp.Model.Endpoints;
 import com.northerly.myfragmentsapp.Model.PojoClass.MyDataSet;
 import com.northerly.myfragmentsapp.Model.PojoClass.Root;
 import com.northerly.myfragmentsapp.Model.ServiceBuilder;
 import com.northerly.myfragmentsapp.R;
+import com.northerly.myfragmentsapp.ViewModel.AddUserViewModel;
 
 import retrofit2.Call;
 import retrofit2.Response;
 
 public class AddFragment extends Fragment {
-
+    MyDataSet myDataSet;
     String name;
     String job;
     @Nullable
@@ -40,6 +44,7 @@ public class AddFragment extends Fragment {
         TextView textId = v.findViewById(R.id.addTextViewId);
         TextView textCreatedOn = v.findViewById(R.id.addTextViewCreatedOn);
 
+        AddUserViewModel addUserViewModel = ViewModelProviders.of(this).get(AddUserViewModel.class);
 
         addButton.setOnClickListener(new View.OnClickListener() {
          @Override
@@ -47,35 +52,21 @@ public class AddFragment extends Fragment {
              name = String.valueOf(editTextName.getText());
              job = String.valueOf(editTextJob.getText());
 
-             MyDataSet myDataSet = new MyDataSet(name,job);
-
-             Endpoints request = ServiceBuilder.createService(Endpoints.class);
-
-             Call<MyDataSet> call = request.postData(myDataSet);
-             call.enqueue(new retrofit2.Callback<MyDataSet>() {
-                 @Override
-                 public void onResponse(Call<MyDataSet> call, Response<MyDataSet> response) {
-
-                     if(response.body() != null) {
-                         textName.setText("Name : "+response.body().getName());
-                         textJob.setText("Job : "+response.body().getJob());
-                         textId.setText("Id : "+response.body().getId());
-                         textCreatedOn.setText("Created On : "+response.body().getCreatedAt());
-                     }
-
-                 }
-
-                 @Override
-                 public void onFailure(Call<MyDataSet> call, Throwable t) {
-                        textName.setText("Connection Error");
-                 }
-             });
-
-             Toast.makeText(getActivity() ,"Data Posted User Successfully",Toast.LENGTH_LONG).show();
-
+              myDataSet = new MyDataSet(name, job);
+             addUserViewModel.postUser(myDataSet);
          }
      });
 
+        addUserViewModel.postedUser.observe(getViewLifecycleOwner(), new Observer<MyDataSet>() {
+            @Override
+            public void onChanged(MyDataSet myDataSet) {
+                textName.setText("Name : "+myDataSet.getName());
+                textJob.setText("Job : "+myDataSet.getJob());
+                textId.setText("Id : "+myDataSet.getId());
+                textCreatedOn.setText("Created On : "+myDataSet.getCreatedAt());
+                Toast.makeText(getActivity() ,"Data Posted User Successfully",Toast.LENGTH_LONG).show();
+            }
+        });
 
    return v; }
 }
