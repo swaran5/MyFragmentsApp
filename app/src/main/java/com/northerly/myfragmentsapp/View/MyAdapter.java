@@ -80,12 +80,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
             String firstName = users.get(position).getFirst_name();
             String lastName = users.get(position).getLast_name();
             String imgUrl = users.get(position).getAvatar();
-            String email = users.get(position).getEmail();
             int id = users.get(position).getId();
 
             Picasso.get().load(imgUrl).into(imgView);
             firstname.setText("First Name : " +firstName);
             lastname.setText("Last Name : " +lastName);
+
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

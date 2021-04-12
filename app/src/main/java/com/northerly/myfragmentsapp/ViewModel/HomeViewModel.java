@@ -23,9 +23,9 @@ public class HomeViewModel extends ViewModel {
     Endpoints request = ServiceBuilder.createService(Endpoints.class);
 
 
-    public MutableLiveData<List<Data>> getUsers(){
+    public MutableLiveData<List<Data>> getUsers(String page){
 
-    Call<Root> call = request.getUsers("1");
+    Call<Root> call = request.getUsers(page);
     call.enqueue(new retrofit2.Callback<Root>() {
         @Override
         public void onResponse(Call<Root> call, Response<Root> response) {

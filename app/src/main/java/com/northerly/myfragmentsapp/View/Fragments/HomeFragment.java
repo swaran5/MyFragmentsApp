@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.northerly.myfragmentsapp.Model.PojoClass.Data;
 import com.northerly.myfragmentsapp.Model.Endpoints;
 import com.northerly.myfragmentsapp.Model.PojoClass.Root;
@@ -37,6 +38,7 @@ public class HomeFragment extends Fragment {
     private MyAdapter myAdapter;
     private RecyclerView recyclerView;
     HomeViewModel homeViewModel;
+    BottomNavigationView bottomNavigationView;
 
     @Nullable
     @Override
@@ -44,9 +46,12 @@ public class HomeFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
 
         homeViewModel = ViewModelProviders.of(getActivity()).get(HomeViewModel.class);
-        homeViewModel.getUsers();
+        homeViewModel.getUsers("1");
         recyclerView = v.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        bottomNavigationView = getActivity().findViewById(R.id.bottm_navigator);
+        bottomNavigationView.setSelectedItemId(R.id.home_button);
+
 
         return v;
     }

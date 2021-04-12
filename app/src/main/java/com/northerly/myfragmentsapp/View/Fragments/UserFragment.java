@@ -18,6 +18,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.northerly.myfragmentsapp.Model.PojoClass.Data;
 import com.northerly.myfragmentsapp.R;
+import com.northerly.myfragmentsapp.View.MainActivity;
 import com.northerly.myfragmentsapp.ViewModel.HomeViewModel;
 import com.northerly.myfragmentsapp.ViewModel.UserViewModel;
 import com.squareup.picasso.Picasso;
@@ -34,20 +35,24 @@ public class UserFragment extends Fragment {
     TextView lasName;
     TextView emails;
     ImageView avatar;
+    BottomNavigationView bottomNavigationView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_user, container, false);
 
+        bottomNavigationView = getActivity().findViewById(R.id.bottm_navigator);
+
         userViewModel = ViewModelProviders.of(getActivity()).get(UserViewModel.class);
          firName = v.findViewById(R.id.firstname);
-
          lasName = v.findViewById(R.id.lastname);
          emails = v.findViewById(R.id.email);
          avatar = v.findViewById(R.id.avatar);
 
         if (this.getArguments() != null) {
+
+            bottomNavigationView.setSelectedItemId(R.id.user_details);
             Bundle bundle = this.getArguments();
             String id = String.valueOf(bundle.getInt("key1"));
             userViewModel.getUser(id);
@@ -76,5 +81,6 @@ public class UserFragment extends Fragment {
         });
 
     }
+
 
 }
