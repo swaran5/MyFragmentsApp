@@ -1,27 +1,33 @@
 package com.northerly.myfragmentsapp.View.Fragments;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.northerly.myfragmentsapp.Model.Endpoints;
 import com.northerly.myfragmentsapp.Model.PojoClass.MyDataSet;
 import com.northerly.myfragmentsapp.Model.PojoClass.Root;
 import com.northerly.myfragmentsapp.Model.ServiceBuilder;
 import com.northerly.myfragmentsapp.R;
+import com.northerly.myfragmentsapp.View.MainActivity;
 import com.northerly.myfragmentsapp.ViewModel.AddUserViewModel;
 
 import retrofit2.Call;
@@ -29,6 +35,7 @@ import retrofit2.Response;
 
 public class AddFragment extends Fragment {
     MyDataSet myDataSet;
+    RelativeLayout relativeLayoutAddUser;
     String name;
     String job;
     @Nullable
@@ -43,19 +50,26 @@ public class AddFragment extends Fragment {
         TextView textJob = v.findViewById(R.id.addTextViewJob);
         TextView textId = v.findViewById(R.id.addTextViewId);
         TextView textCreatedOn = v.findViewById(R.id.addTextViewCreatedOn);
+        relativeLayoutAddUser = getActivity().findViewById(R.id.relativeLayout);
 
         AddUserViewModel addUserViewModel = ViewModelProviders.of(getActivity()).get(AddUserViewModel.class);
 
         addButton.setOnClickListener(new View.OnClickListener() {
+         @RequiresApi(api = Build.VERSION_CODES.M)
          @Override
          public void onClick(View v) {
-             name = String.valueOf(editTextName.getText());
-             job = String.valueOf(editTextJob.getText());
+             if(isConnected()) {
+                 name = String.valueOf(editTextName.getText());
+                 job = String.valueOf(editTextJob.getText());
 
-              myDataSet = new MyDataSet(name, job);
-             addUserViewModel.postUser(myDataSet);
-             Toast.makeText(getActivity() ,"Data Posted User Successfully",Toast.LENGTH_LONG).show();
+                 myDataSet = new MyDataSet(name, job);
+                 addUserViewModel.postUser(myDataSet);
+                 new MainActivity().snackBarOnine(relativeLayoutAddUser);
 
+             }
+             else {
+                 new MainActivity().snackBarOffline(relativeLayoutAddUser);
+             }
          }
      });
 
@@ -66,8 +80,14 @@ public class AddFragment extends Fragment {
                 textJob.setText("Job : "+myDataSet.getJob());
                 textId.setText("Id : "+myDataSet.getId());
                 textCreatedOn.setText("Created On : "+myDataSet.getCreatedAt());
+
             }
         });
 
    return v; }
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private boolean isConnected(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(getActivity().CONNECTIVITY_SERVICE);
+        return connectivityManager.getActiveNetworkInfo()!=null && connectivityManager.getActiveNetworkInfo().isConnectedOrConnecting();
+    }
 }
