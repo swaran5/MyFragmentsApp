@@ -10,6 +10,7 @@ import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -36,19 +37,24 @@ import retrofit2.Response;
 public class HomeFragment extends Fragment {
 
     private MyAdapter myAdapter;
+
+    Context context;
     private RecyclerView recyclerView;
     HomeViewModel homeViewModel;
     BottomNavigationView bottomNavigationView;
+    public HomeFragment(Context context) {
+        this.context = context;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
 
-        homeViewModel = ViewModelProviders.of(getActivity()).get(HomeViewModel.class);
+        homeViewModel = ViewModelProviders.of((FragmentActivity) context).get(HomeViewModel.class);
         homeViewModel.getUsers("1");
         recyclerView = v.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
         bottomNavigationView = getActivity().findViewById(R.id.bottm_navigator);
         bottomNavigationView.setSelectedItemId(R.id.home_button);
 
@@ -64,7 +70,7 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void onChanged(List<Data> data) {
 
-                    myAdapter = new MyAdapter(getActivity(),data);
+                    myAdapter = new MyAdapter(context,data);
                     recyclerView.setAdapter(myAdapter);
                     myAdapter.notifyDataSetChanged();
 
@@ -75,7 +81,7 @@ public class HomeFragment extends Fragment {
                             Bundle bundle = new Bundle();
                             bundle.putInt("key1", id);
 
-                            UserFragment userFragment = new UserFragment();
+                            UserFragment userFragment = new UserFragment(context);
                             userFragment.setArguments(bundle);
                             getFragmentManager()
                                     .beginTransaction()

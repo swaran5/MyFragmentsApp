@@ -1,5 +1,6 @@
 package com.northerly.myfragmentsapp.View.Fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,12 @@ import java.util.List;
 
 public class UserFragment extends Fragment {
     UserViewModel userViewModel;
+    Context context;
+
+    public UserFragment(Context context) {
+        this.context = context;
+    }
+
     String fname;
     String lname;
     String email;

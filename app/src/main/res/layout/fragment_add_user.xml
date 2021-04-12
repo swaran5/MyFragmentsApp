@@ -57,13 +57,33 @@
         android:layout_marginTop="10dp"
         />
 
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/addTextViewCreatedOn"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/addTextView"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/addTextViewId"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/addTextViewCreatedOn"
+        />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/addTextViewName"
         android:textSize="20dp"
         android:gravity="center"
-        android:layout_below="@id/addTextView"
+        android:layout_below="@id/addTextViewId"
         android:layout_marginTop="10dp"
         />
 
@@ -75,26 +95,6 @@
         android:textSize="20dp"
         android:layout_marginTop="10dp"
         android:layout_below="@id/addTextViewName"
-        />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/addTextViewId"
-        android:gravity="center"
-        android:textSize="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/addTextViewJob"
-        />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/addTextViewCreatedOn"
-        android:gravity="center"
-        android:textSize="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/addTextViewId"
         />
 
 </RelativeLayout>

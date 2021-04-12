@@ -24,6 +24,7 @@ import com.northerly.myfragmentsapp.ViewModel.HomeViewModel;
 
 public class MainActivity extends AppCompatActivity {
     HomeViewModel home;
+    Context context = this;
    public BottomNavigationView bottomNav;
 
     @Override
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragment_container, new HomeFragment())
+                        .replace(R.id.fragment_container, new HomeFragment(context))
                         .commit();
                 return false;
             }
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         });
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, new HomeFragment())
+                .replace(R.id.fragment_container, new HomeFragment(context))
                 .commit();
 
 

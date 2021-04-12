@@ -32,6 +32,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
 
     public  Context context;
     public List<Data> users;
+    public static Data user;
 
     public MyAdapter(Context context , List<Data> listdata) {
         this.users = listdata;
@@ -42,7 +43,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View listitem = layoutInflater.inflate(item_view,parent,false);
+        View listitem = layoutInflater.inflate(R.layout.item_view,parent,false);
         ViewHolder viewHolder = new ViewHolder(listitem);
         return viewHolder;
     }
@@ -50,7 +51,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        holder.setData(context ,users,position,mListener);
+        user = users.get(position);
+        holder.setData(context ,users,mListener);
 
     }
 
@@ -75,12 +77,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
 
         }
 
-        public void setData(Context holdercontext ,List<Data> users, int position, OnItemClickListener listener) {
+        public void setData(Context holdercontext ,List<Data> users, OnItemClickListener listener) {
 
-            String firstName = users.get(position).getFirst_name();
-            String lastName = users.get(position).getLast_name();
-            String imgUrl = users.get(position).getAvatar();
-            int id = users.get(position).getId();
+            String firstName = user.getFirst_name();
+            String lastName = user.getLast_name();
+            String imgUrl = user.getAvatar();
+            int id = user.getId();
 
             Picasso.get().load(imgUrl).into(imgView);
             firstname.setText("First Name : " +firstName);
