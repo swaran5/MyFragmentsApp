@@ -52,7 +52,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         user = users.get(position);
-        holder.setData(context ,users,mListener);
+        holder.setData(context ,user,mListener);
 
     }
 
@@ -77,7 +77,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
 
         }
 
-        public void setData(Context holdercontext ,List<Data> users, OnItemClickListener listener) {
+        public void setData(Context holdercontext , Data user, OnItemClickListener listener) {
 
             String firstName = user.getFirst_name();
             String lastName = user.getLast_name();
