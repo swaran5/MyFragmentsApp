@@ -33,7 +33,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
-    public Context context = this.getContext();
+
     private MyAdapter myAdapter;
     private RecyclerView recyclerView;
     HomeViewModel homeViewModel;
@@ -43,10 +43,10 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
 
-        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
+        homeViewModel = ViewModelProviders.of(getActivity()).get(HomeViewModel.class);
+        homeViewModel.getUsers();
         recyclerView = v.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            homeViewModel.getUsers();
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return v;
     }
@@ -55,11 +55,11 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        homeViewModel.Users.observe(getViewLifecycleOwner(), new Observer<List<Data>>() {
+        homeViewModel.Users.observe(getActivity(), new Observer<List<Data>>() {
                 @Override
                 public void onChanged(List<Data> data) {
 
-                    myAdapter = new MyAdapter(data);
+                    myAdapter = new MyAdapter(getActivity(),data);
                     recyclerView.setAdapter(myAdapter);
                     myAdapter.notifyDataSetChanged();
 

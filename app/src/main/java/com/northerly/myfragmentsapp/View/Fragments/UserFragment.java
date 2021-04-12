@@ -40,7 +40,7 @@ public class UserFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_user, container, false);
 
-        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        userViewModel = ViewModelProviders.of(getActivity()).get(UserViewModel.class);
          firName = v.findViewById(R.id.firstname);
 
          lasName = v.findViewById(R.id.lastname);
@@ -60,20 +60,21 @@ public class UserFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        userViewModel.user.observe(getViewLifecycleOwner(), new Observer<Data>() {
+        userViewModel.user.observe(getActivity(), new Observer<Data>() {
             @Override
             public void onChanged(Data data) {
                 fname = data.getFirst_name();
-                firName.setText("Frist Name : "+fname);
+                firName.setText("Frist Name : " + fname);
                 lname = data.getLast_name();
-                lasName.setText("Last Name : "+lname);
+                lasName.setText("Last Name : " + lname);
                 email = data.getEmail();
-                emails.setText("Email : "+email);
+                emails.setText("Email : " + email);
                 url = data.getAvatar();
                 Picasso.get().load(url).into(avatar);
 
             }
         });
+
     }
 
 }

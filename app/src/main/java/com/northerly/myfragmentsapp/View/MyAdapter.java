@@ -33,7 +33,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
     public  Context context;
     public List<Data> users;
 
-    public MyAdapter(List<Data> listdata) {
+    public MyAdapter(Context context , List<Data> listdata) {
         this.users = listdata;
         this.context = context;
     }
@@ -41,7 +41,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
         View listitem = layoutInflater.inflate(item_view,parent,false);
         ViewHolder viewHolder = new ViewHolder(listitem);
         return viewHolder;
@@ -50,7 +50,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        holder.setData(users,position,mListener);
+        holder.setData(context ,users,position,mListener);
 
     }
 
@@ -75,7 +75,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
 
         }
 
-        public void setData(List<Data> users, int position, OnItemClickListener listener) {
+        public void setData(Context holdercontext ,List<Data> users, int position, OnItemClickListener listener) {
 
             String firstName = users.get(position).getFirst_name();
             String lastName = users.get(position).getLast_name();

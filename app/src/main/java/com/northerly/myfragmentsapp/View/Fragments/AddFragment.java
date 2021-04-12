@@ -44,7 +44,7 @@ public class AddFragment extends Fragment {
         TextView textId = v.findViewById(R.id.addTextViewId);
         TextView textCreatedOn = v.findViewById(R.id.addTextViewCreatedOn);
 
-        AddUserViewModel addUserViewModel = ViewModelProviders.of(this).get(AddUserViewModel.class);
+        AddUserViewModel addUserViewModel = ViewModelProviders.of(getActivity()).get(AddUserViewModel.class);
 
         addButton.setOnClickListener(new View.OnClickListener() {
          @Override
@@ -54,17 +54,18 @@ public class AddFragment extends Fragment {
 
               myDataSet = new MyDataSet(name, job);
              addUserViewModel.postUser(myDataSet);
+             Toast.makeText(getActivity() ,"Data Posted User Successfully",Toast.LENGTH_LONG).show();
+
          }
      });
 
-        addUserViewModel.postedUser.observe(getViewLifecycleOwner(), new Observer<MyDataSet>() {
+        addUserViewModel.postedUser.observe(getActivity(), new Observer<MyDataSet>() {
             @Override
             public void onChanged(MyDataSet myDataSet) {
                 textName.setText("Name : "+myDataSet.getName());
                 textJob.setText("Job : "+myDataSet.getJob());
                 textId.setText("Id : "+myDataSet.getId());
                 textCreatedOn.setText("Created On : "+myDataSet.getCreatedAt());
-                Toast.makeText(getActivity() ,"Data Posted User Successfully",Toast.LENGTH_LONG).show();
             }
         });
 
