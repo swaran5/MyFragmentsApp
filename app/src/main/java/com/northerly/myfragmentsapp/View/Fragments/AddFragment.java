@@ -21,12 +21,14 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.northerly.myfragmentsapp.Model.Endpoints;
 import com.northerly.myfragmentsapp.Model.PojoClass.MyDataSet;
 import com.northerly.myfragmentsapp.Model.PojoClass.Root;
 import com.northerly.myfragmentsapp.Model.ServiceBuilder;
 import com.northerly.myfragmentsapp.R;
+import com.northerly.myfragmentsapp.View.Dialog.BottomSheet;
 import com.northerly.myfragmentsapp.View.MainActivity;
 import com.northerly.myfragmentsapp.ViewModel.AddUserViewModel;
 
@@ -46,6 +48,7 @@ public class AddFragment extends Fragment {
         EditText editTextName = v.findViewById(R.id.editTextName);
         EditText editTextJob = v.findViewById(R.id.editTextJob);
         Button addButton = v.findViewById(R.id.add_button);
+        FloatingActionButton floatingActionButton = v.findViewById(R.id.floatingActionButton);
         TextView textName = v.findViewById(R.id.addTextViewName);
         TextView textJob = v.findViewById(R.id.addTextViewJob);
         TextView textId = v.findViewById(R.id.addTextViewId);
@@ -53,6 +56,14 @@ public class AddFragment extends Fragment {
         relativeLayoutAddUser = getActivity().findViewById(R.id.relativeLayout);
 
         AddUserViewModel addUserViewModel = ViewModelProviders.of(getActivity()).get(AddUserViewModel.class);
+
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BottomSheet bottomSheet = new BottomSheet();
+                bottomSheet.show(getActivity().getSupportFragmentManager(), "Bottom Sheet");
+            }
+        });
 
         addButton.setOnClickListener(new View.OnClickListener() {
          @RequiresApi(api = Build.VERSION_CODES.M)

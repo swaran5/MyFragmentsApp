@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerHorizontal="true"
+    android:padding="15dp"
+    >
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Add User"
+    android:gravity="center"
+    android:textSize="25dp"
+    />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="First Name"
+        android:id="@+id/firstnameBottomSheet"
+        android:layout_margin="10dp"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Last Name"
+        android:id="@+id/lastnameBottomSheet"
+        android:layout_margin="10dp"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="email"
+        android:id="@+id/emailBottomSheet"
+        android:layout_margin="10dp"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Phone Number"
+        android:id="@+id/phonenumBottomSheet"
+        android:layout_margin="10dp"
+        />
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner"
+        android:layout_margin="10dp"
+        android:spinnerMode="dropdown"
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:id="@+id/addBottomSheet"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="90dp"
+        android:text="Add User"
+        android:textAllCaps="false"
+        android:layout_marginRight="90dp"
+        />
+</LinearLayout>
