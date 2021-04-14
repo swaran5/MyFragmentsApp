@@ -115,7 +115,7 @@ public class BottomSheet extends BottomSheetDialogFragment {
                 ValidateName(firstName);
                 ValidateName(lastName);
                 ValidatePhonenum();
-                if(     brand != "brand" &&
+                if(!brand.equals("brand") &&
                         ValidatePhonenum() &&
                         ValidateEmail() &&
                         ValidateName(firstName) &&
@@ -134,7 +134,7 @@ public class BottomSheet extends BottomSheetDialogFragment {
                         new MainActivity().snackBarOffline(relativeLayoutAddUser);
                     }
                 }
-                else {
+                if(brand.equals("brand")) {
                     Toast.makeText(getActivity(),"Select a Brand..",Toast.LENGTH_SHORT).show();
                 }
             }

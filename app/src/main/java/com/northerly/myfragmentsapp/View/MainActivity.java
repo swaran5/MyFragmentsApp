@@ -29,7 +29,9 @@ import com.northerly.myfragmentsapp.ViewModel.HomeViewModel;
 public class MainActivity extends AppCompatActivity {
     HomeViewModel home;
     Context context = this;
-   public BottomNavigationView bottomNav;
+    GoBackDialog goBackDialog = new GoBackDialog();
+
+    public BottomNavigationView bottomNav;
     RelativeLayout relativeLayout;
 
     @Override
@@ -59,7 +61,9 @@ public class MainActivity extends AppCompatActivity {
         bottomNav.setItemOnTouchListener(R.id.user_details, new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                   goBack();
+                if(!goBackDialog.isAdded()) {
+                    goBackDialog.show(getSupportFragmentManager(), "Go Back");
+                }
                 return true;
             }
         });
@@ -94,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
    public void goBack(){
-        GoBackDialog goBackDialog = new GoBackDialog();
-        goBackDialog.show(getSupportFragmentManager(),"Go Back");
+//        GoBackDialog goBackDialog = new GoBackDialog();
+//        goBackDialog.show(getSupportFragmentManager(),"Go Back");
     }
     private boolean isConnected(){
         ConnectivityManager connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(context.CONNECTIVITY_SERVICE);
