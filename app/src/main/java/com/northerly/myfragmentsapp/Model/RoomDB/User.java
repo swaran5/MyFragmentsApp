@@ -9,23 +9,50 @@ public class User {
 
     @PrimaryKey
     @NonNull
-    private String id;
+    private String firstName;
 
     @NonNull
-    private String name;
+    private String lastName;
 
-    public User(@NonNull String id, @NonNull String name) {
-        this.id = id;
-        this.name = name;
+    @NonNull
+    private String email;
+
+    @NonNull
+    private String phone;
+
+    @NonNull
+    private String brand;
+
+    public User(@NonNull String firstName, @NonNull String lastName, @NonNull String email, @NonNull String phone, @NonNull String brand) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.brand = brand;
     }
 
     @NonNull
-    public String getId() {
-        return id;
+    public String getFirstName() {
+        return firstName;
     }
 
     @NonNull
-    public String getName() {
-        return name;
+    public String getLastName() {
+        return lastName;
+    }
+
+    @NonNull
+    public String getEmail() {
+        return email;
+    }
+
+    @NonNull
+    public String getPhone() {
+        return phone;
+    }
+
+    @NonNull
+    public String getBrand() {
+        return brand;
     }
 }

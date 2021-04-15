@@ -1,10 +1,8 @@
 package com.northerly.myfragmentsapp.View.Dialog;
 
-import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,12 +24,10 @@ import com.northerly.myfragmentsapp.Model.PojoClass.MyDataSet;
 import com.northerly.myfragmentsapp.Model.RoomDB.User;
 import com.northerly.myfragmentsapp.Model.RoomDB.UserDao;
 import com.northerly.myfragmentsapp.Model.RoomDB.UserDataBase;
-import com.northerly.myfragmentsapp.Model.RoomDB.UserDataBase_Impl;
 import com.northerly.myfragmentsapp.R;
 import com.northerly.myfragmentsapp.View.MainActivity;
 import com.northerly.myfragmentsapp.ViewModel.AddUserViewModel;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -136,10 +132,12 @@ public class BottomSheet extends BottomSheetDialogFragment {
                     if (isConnected()) {
                         String name = String.valueOf(firstName.getText());
                         String job = String.valueOf(lastName.getText());
+                        String emails = String.valueOf(email.getText());
+                        String phones = String.valueOf(phone.getText());
 
                         MyDataSet myDataSet = new MyDataSet(name, job);
                         addUserViewModel.postUser(myDataSet);
-                        User user = new User(name , job);
+                        User user = new User(name , job, emails, phones, brand);
                         insert(user);
                         new MainActivity().snackBarOnine(relativeLayoutAddUser);
                         dismiss();
