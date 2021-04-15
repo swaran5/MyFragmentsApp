@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 @Entity (tableName = "users")
 public class User {
 
-    @PrimaryKey
+
     @NonNull
     private String firstName;
 
@@ -16,7 +16,7 @@ public class User {
 
     @NonNull
     private String email;
-
+    @PrimaryKey
     @NonNull
     private String phone;
 

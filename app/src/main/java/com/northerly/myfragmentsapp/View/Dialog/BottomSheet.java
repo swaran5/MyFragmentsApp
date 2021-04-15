@@ -229,12 +229,13 @@ public class BottomSheet extends BottomSheetDialogFragment {
 
     @Override
     protected void onPostExecute(List<User> users) {
-        int i = users.size()-1;
-        firstName.setText(users.get(i).getFirstName());
-        lastName.setText(users.get(i).getLastName());
-        email.setText(users.get(i).getEmail());
-        phone.setText(users.get(i).getPhone());
-
+            if(users.size() != 0) {
+                int i = users.size() - 1;
+                firstName.setText(users.get(i).getFirstName());
+                lastName.setText(users.get(i).getLastName());
+                email.setText(users.get(i).getEmail());
+                phone.setText(users.get(i).getPhone());
+            }
     }
 }
 }
