@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -44,6 +45,7 @@ public class BottomSheet extends BottomSheetDialogFragment {
     EditText email;
     EditText phone;
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,6 +60,9 @@ public class BottomSheet extends BottomSheetDialogFragment {
          phone = v.findViewById(R.id.phonenumBottomSheet);
          userDB = UserDataBase.getDataBase(getActivity().getApplicationContext());
          userDao = userDB.userDao();
+
+         GetAsyncTask getuser = new GetAsyncTask();
+         getuser.execute();
 
         Spinner spinner = v.findViewById(R.id.spinner);
         Button addButton = v.findViewById(R.id.addBottomSheet);
@@ -139,6 +144,7 @@ public class BottomSheet extends BottomSheetDialogFragment {
                         addUserViewModel.postUser(myDataSet);
                         User user = new User(name , job, emails, phones, brand);
                         insert(user);
+
                         new MainActivity().snackBarOnine(relativeLayoutAddUser);
                         dismiss();
                     } else {
@@ -150,7 +156,8 @@ public class BottomSheet extends BottomSheetDialogFragment {
                 }
             }
         });
-    return v;}
+
+        return v;}
     private Boolean ValidateEmail() {
         String inputemail = email.getText().toString().trim();
         if(inputemail.isEmpty()){
@@ -201,21 +208,33 @@ public class BottomSheet extends BottomSheetDialogFragment {
         return connectivityManager.getActiveNetworkInfo()!=null && connectivityManager.getActiveNetworkInfo().isConnectedOrConnecting();
     }
     public void insert(User user){
-    new InsertAsyncTask(userDao).execute(user);
+    new InsertAsyncTask().execute(user);
     }
 
     private class InsertAsyncTask extends AsyncTask<User, Void ,Void>{
 
-        UserDao mUserDao;
-
-        public InsertAsyncTask(UserDao mUserDao) {
-            this.mUserDao = mUserDao;
-        }
-
         @Override
         protected Void doInBackground(User... users) {
-            mUserDao.insert(users[0]);
+            userDao.insert(users[0]);
             return null;
         }
     }
+
+    public class GetAsyncTask extends AsyncTask<Void, Void, List<User>>{
+
+        @Override
+        protected List<User> doInBackground(Void... voids) {
+          return userDao.getAllUsers();
+        }
+
+    @Override
+    protected void onPostExecute(List<User> users) {
+        int i = users.size()-1;
+        firstName.setText(users.get(i).getFirstName());
+        lastName.setText(users.get(i).getLastName());
+        email.setText(users.get(i).getEmail());
+        phone.setText(users.get(i).getPhone());
+
+    }
+}
 }
