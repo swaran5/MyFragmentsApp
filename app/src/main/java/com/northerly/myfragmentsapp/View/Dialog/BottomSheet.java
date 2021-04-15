@@ -1,7 +1,10 @@
 package com.northerly.myfragmentsapp.View.Dialog;
 
+import android.content.Context;
 import android.net.ConnectivityManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +23,10 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.northerly.myfragmentsapp.Model.PojoClass.MyDataSet;
+import com.northerly.myfragmentsapp.Model.RoomDB.User;
+import com.northerly.myfragmentsapp.Model.RoomDB.UserDao;
+import com.northerly.myfragmentsapp.Model.RoomDB.UserDataBase;
+import com.northerly.myfragmentsapp.Model.RoomDB.UserDataBase_Impl;
 import com.northerly.myfragmentsapp.R;
 import com.northerly.myfragmentsapp.View.MainActivity;
 import com.northerly.myfragmentsapp.ViewModel.AddUserViewModel;
@@ -34,6 +41,8 @@ import java.util.regex.Pattern;
 public class BottomSheet extends BottomSheetDialogFragment {
     List<String> brands;
     public String brand;
+    private UserDao userDao;
+    private UserDataBase userDB;
     EditText firstName;
     EditText lastName;
     EditText email;
@@ -51,6 +60,8 @@ public class BottomSheet extends BottomSheetDialogFragment {
          lastName = v.findViewById(R.id.lastnameBottomSheet);
          email = v.findViewById(R.id.emailBottomSheet);
          phone = v.findViewById(R.id.phonenumBottomSheet);
+         userDB = UserDataBase.getDataBase(getActivity().getApplicationContext());
+         userDao = userDB.userDao();
 
         Spinner spinner = v.findViewById(R.id.spinner);
         Button addButton = v.findViewById(R.id.addBottomSheet);
@@ -128,6 +139,8 @@ public class BottomSheet extends BottomSheetDialogFragment {
 
                         MyDataSet myDataSet = new MyDataSet(name, job);
                         addUserViewModel.postUser(myDataSet);
+                        User user = new User(name , job);
+                        insert(user);
                         new MainActivity().snackBarOnine(relativeLayoutAddUser);
                         dismiss();
                     } else {
@@ -188,5 +201,23 @@ public class BottomSheet extends BottomSheetDialogFragment {
     private boolean isConnected(){
         ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(getActivity().CONNECTIVITY_SERVICE);
         return connectivityManager.getActiveNetworkInfo()!=null && connectivityManager.getActiveNetworkInfo().isConnectedOrConnecting();
+    }
+    public void insert(User user){
+    new InsertAsyncTask(userDao).execute(user);
+    }
+
+    private class InsertAsyncTask extends AsyncTask<User, Void ,Void>{
+
+        UserDao mUserDao;
+
+        public InsertAsyncTask(UserDao mUserDao) {
+            this.mUserDao = mUserDao;
+        }
+
+        @Override
+        protected Void doInBackground(User... users) {
+            mUserDao.insert(users[0]);
+            return null;
+        }
     }
 }
