@@ -150,8 +150,10 @@ public class BottomSheet extends BottomSheetDialogFragment {
                             if (alluserlist.get(k).getPhone() == phones) {
                                 updateUser(user);
                             }
+                            else {
+                                insert(user);
+                            }
                         }
-                           insert(user);
 
                         new MainActivity().snackBarOnine(relativeLayoutAddUser);
                         dismiss();
