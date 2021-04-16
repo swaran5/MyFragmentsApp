@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
 
 public class BottomSheet extends BottomSheetDialogFragment {
     List<String> brands;
+    List<User> alluserlist;
     public String brand;
     private UserDao userDao;
     private UserDataBase userDB;
@@ -44,6 +45,7 @@ public class BottomSheet extends BottomSheetDialogFragment {
     EditText lastName;
     EditText email;
     EditText phone;
+    int k;
 
 
     @Nullable
@@ -143,7 +145,13 @@ public class BottomSheet extends BottomSheetDialogFragment {
                         MyDataSet myDataSet = new MyDataSet(name, job);
                         addUserViewModel.postUser(myDataSet);
                         User user = new User(name , job, emails, phones, brand);
-                        insert(user);
+                        for(int j= 0 ; j < alluserlist.size(); j++) {
+                            k = j;
+                            if (alluserlist.get(k).getPhone() == phones) {
+                                updateUser(user);
+                            }
+                        }
+                           insert(user);
 
                         new MainActivity().snackBarOnine(relativeLayoutAddUser);
                         dismiss();
@@ -208,6 +216,7 @@ public class BottomSheet extends BottomSheetDialogFragment {
         return connectivityManager.getActiveNetworkInfo()!=null && connectivityManager.getActiveNetworkInfo().isConnectedOrConnecting();
     }
     public void insert(User user){
+
     new InsertAsyncTask().execute(user);
     }
 
@@ -229,6 +238,7 @@ public class BottomSheet extends BottomSheetDialogFragment {
 
     @Override
     protected void onPostExecute(List<User> users) {
+            alluserlist = users;
             if(users.size() != 0) {
                 int i = users.size() - 1;
                 firstName.setText(users.get(i).getFirstName());
@@ -238,4 +248,17 @@ public class BottomSheet extends BottomSheetDialogFragment {
             }
     }
 }
+    public void updateUser(User user){
+
+        new UpdateAsyncTask().execute(user);
+    }
+    private class UpdateAsyncTask extends AsyncTask<User, Void, Void>
+    {
+
+        @Override
+        protected Void doInBackground(User... users) {
+            userDao.updateUser(users[k]);
+            return null;
+        }
+    }
 }
