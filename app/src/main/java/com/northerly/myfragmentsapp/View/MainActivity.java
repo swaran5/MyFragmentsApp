@@ -22,6 +22,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.northerly.myfragmentsapp.R;
 import com.northerly.myfragmentsapp.View.Dialog.GoBackDialog;
 import com.northerly.myfragmentsapp.View.Fragments.AddFragment;
+import com.northerly.myfragmentsapp.View.Fragments.DBFragment;
 import com.northerly.myfragmentsapp.View.Fragments.HomeFragment;
 import com.northerly.myfragmentsapp.View.Fragments.UserFragment;
 import com.northerly.myfragmentsapp.ViewModel.HomeViewModel;
@@ -85,6 +86,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        bottomNav.setItemOnTouchListener(R.id.user_DB, new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(isConnected()) {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, new DBFragment(context))
+                            .commit();
+                }
+                else{
+                    snackBarOffline(relativeLayout);
+                }
+
+                return false;
+            }
+        });
+
         if(isConnected()) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -97,10 +115,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-   public void goBack(){
-//        GoBackDialog goBackDialog = new GoBackDialog();
-//        goBackDialog.show(getSupportFragmentManager(),"Go Back");
-    }
+
     private boolean isConnected(){
         ConnectivityManager connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(context.CONNECTIVITY_SERVICE);
         return connectivityManager.getActiveNetworkInfo()!=null && connectivityManager.getActiveNetworkInfo().isConnectedOrConnecting();

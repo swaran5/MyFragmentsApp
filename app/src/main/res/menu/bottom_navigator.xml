@@ -14,7 +14,12 @@
     <item
         android:id="@+id/add_user"
         android:icon="@drawable/ic_baseline_person_add_24"
-        android:title="Add User">
+        android:title="Add User"
+        />
+    <item
+        android:id="@+id/user_DB"
+        android:icon="@android:drawable/ic_input_get"
+        android:title="User DataBase"
+        />
 
-    </item>
 </menu>

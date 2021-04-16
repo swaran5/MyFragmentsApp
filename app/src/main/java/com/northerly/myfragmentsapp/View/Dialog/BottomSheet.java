@@ -235,7 +235,7 @@ public class BottomSheet extends BottomSheetDialogFragment {
 
         @Override
         protected List<User> doInBackground(Void... voids) {
-          return userDao.getAllUsers();
+            return userDao.getAllUsers();
         }
 
     @Override

@@ -23,6 +23,7 @@
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:background="#00BCD4"
+    app:labelVisibilityMode="labeled"
     app:menu="@menu/bottom_navigator"
     app:itemIconTint="@color/icon_color"
     />
