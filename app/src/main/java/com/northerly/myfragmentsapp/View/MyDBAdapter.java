@@ -64,11 +64,11 @@ public class MyDBAdapter extends RecyclerView.Adapter<MyDBAdapter.ViewHolder> {
         }
 
         void setData(Context context, User user){
-            firstname.setText(user.getFirstName());
-            lastname.setText(user.getLastName());
-            email.setText(user.getEmail());
-            phone.setText(user.getPhone());
-            brand.setText(user.getBrand());
+            firstname.setText("First Name : "+user.getFirstName());
+            lastname.setText("Last Name : "+user.getLastName());
+            email.setText("Email : "+user.getEmail());
+            phone.setText("Phone Number : "+user.getPhone());
+            brand.setText("Brand : "+user.getBrand());
 
         }
     }

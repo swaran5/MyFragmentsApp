@@ -28,7 +28,7 @@ import com.northerly.myfragmentsapp.View.Fragments.UserFragment;
 import com.northerly.myfragmentsapp.ViewModel.HomeViewModel;
 
 public class MainActivity extends AppCompatActivity {
-    HomeViewModel home;
+
     Context context = this;
     GoBackDialog goBackDialog = new GoBackDialog();
 
@@ -45,18 +45,20 @@ public class MainActivity extends AppCompatActivity {
         bottomNav.setItemOnTouchListener(R.id.home_button, new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(isConnected()) {
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.fragment_container, new HomeFragment(context))
-                            .commit();
-                    snackBarOnine(relativeLayout);
-                }
-                else {
-                    snackBarOffline(relativeLayout);
-                }
-                return false;
-            }
+                    if (isConnected()) {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragment_container, new HomeFragment(context))
+                                .commit();
+                        snackBarOnine(relativeLayout);
+                        return false;
+                    } else {
+                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                            snackBarOffline(relativeLayout);
+                            return true;
+                        }
+                    }
+                return true;}
         });
 
         bottomNav.setItemOnTouchListener(R.id.user_details, new View.OnTouchListener() {
@@ -77,27 +79,25 @@ public class MainActivity extends AppCompatActivity {
                             .beginTransaction()
                             .replace(R.id.fragment_container, new AddFragment())
                             .commit();
+                    return false;
                 }
                 else{
-                    snackBarOffline(relativeLayout);
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        snackBarOffline(relativeLayout);
+                        return true;
+                    }
                 }
-
-                return false;
-            }
+          return true;  }
         });
 
         bottomNav.setItemOnTouchListener(R.id.user_DB, new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(isConnected()) {
+
                     getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.fragment_container, new DBFragment(context))
                             .commit();
-                }
-                else{
-                    snackBarOffline(relativeLayout);
-                }
 
                 return false;
             }
