@@ -19,11 +19,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.northerly.myfragmentsapp.Model.PojoClass.Data;
 import com.northerly.myfragmentsapp.Model.Endpoints;
 import com.northerly.myfragmentsapp.Model.PojoClass.Root;
 import com.northerly.myfragmentsapp.Model.ServiceBuilder;
 import com.northerly.myfragmentsapp.R;
+import com.northerly.myfragmentsapp.View.Dialog.BottomSheet;
+import com.northerly.myfragmentsapp.View.Dialog.BottomSheetHome;
 import com.northerly.myfragmentsapp.View.MainActivity;
 import com.northerly.myfragmentsapp.View.MyAdapter;
 import com.northerly.myfragmentsapp.ViewModel.HomeViewModel;
@@ -40,6 +43,7 @@ public class HomeFragment extends Fragment {
 
     Context context;
     private RecyclerView recyclerView;
+    FloatingActionButton floatingActionButton;
     HomeViewModel homeViewModel;
     BottomNavigationView bottomNavigationView;
     public HomeFragment(Context context) {
@@ -54,10 +58,19 @@ public class HomeFragment extends Fragment {
         homeViewModel = ViewModelProviders.of((FragmentActivity) context).get(HomeViewModel.class);
         homeViewModel.getUsers("1");
         recyclerView = v.findViewById(R.id.recyclerView);
+        floatingActionButton = v.findViewById(R.id.floatingActionButtonhome);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         bottomNavigationView = getActivity().findViewById(R.id.bottm_navigator);
         bottomNavigationView.setSelectedItemId(R.id.home_button);
 
+
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BottomSheetHome bottomSheethome = new BottomSheetHome();
+                bottomSheethome.show(getActivity().getSupportFragmentManager(), "Bottom Sheet");
+            }
+        });
 
         return v;
     }
