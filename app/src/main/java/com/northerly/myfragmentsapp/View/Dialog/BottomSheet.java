@@ -145,14 +145,17 @@ public class BottomSheet extends BottomSheetDialogFragment {
                         MyDataSet myDataSet = new MyDataSet(name, job);
                         addUserViewModel.postUser(myDataSet);
                         User user = new User(name , job, emails, phones, brand);
+
+                        Boolean checkupdate = true;
                         for(int j= 0 ; j < alluserlist.size(); j++) {
                             k = j;
-                            if (alluserlist.get(k).getPhone() == phones) {
+                            if (alluserlist.get(k).getPhone().equals(phones)) {
                                 updateUser(user);
+                                checkupdate = false;
                             }
-                            else {
-                                insert(user);
-                            }
+                        }
+                        if(checkupdate){
+                            insert(user);
                         }
 
                         new MainActivity().snackBarOnine(relativeLayoutAddUser);
@@ -259,7 +262,7 @@ public class BottomSheet extends BottomSheetDialogFragment {
 
         @Override
         protected Void doInBackground(User... users) {
-            userDao.updateUser(users[k]);
+            userDao.updateUser(users[0]);
             return null;
         }
     }
