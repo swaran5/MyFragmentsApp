@@ -24,7 +24,6 @@ public class DBViewModel extends AndroidViewModel {
 
     public class GettAsync extends AsyncTask<Void, Void, List<User>>
     {
-
         @Override
         protected List<User> doInBackground(Void... voids) {
           return userDao.getAllUsers();

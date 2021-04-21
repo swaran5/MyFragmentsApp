@@ -1,14 +1,23 @@
 package com.northerly.myfragmentsapp.View.Fragments;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.style.LeadingMarginSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
@@ -67,12 +76,87 @@ public class HomeFragment extends Fragment {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BottomSheetHome bottomSheethome = new BottomSheetHome();
-                bottomSheethome.show(getActivity().getSupportFragmentManager(), "Bottom Sheet");
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                    if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE)+
+                        ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.CAMERA)+
+                        ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_FINE_LOCATION)+
+                        ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.CALL_PHONE)+
+                        ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.SEND_SMS)+
+                        ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.READ_CONTACTS)
+                            == PackageManager.PERMISSION_GRANTED)
+                            {
+                                Toast.makeText(getActivity(),"permission granted already", Toast.LENGTH_SHORT).show();
+                                BottomSheetHome bottomSheethome = new BottomSheetHome();
+                                bottomSheethome.show(getActivity().getSupportFragmentManager(), "Bottom Sheet");
+                    }
+                    else {
+
+                        if(
+                                ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE) ||
+                                        ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.CAMERA) ||
+                                        ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.ACCESS_FINE_LOCATION) ||
+                                        ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.CALL_PHONE) ||
+                                        ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.SEND_SMS) ||
+                                        ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.READ_CONTACTS)
+                        ){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                            builder.setTitle("Needs permission")
+                                    .setMessage("Please grant permission for this option..")
+                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            ActivityCompat.requestPermissions(getActivity(),
+                                                    new String[]{
+                                                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                                                            Manifest.permission.CAMERA,
+                                                            Manifest.permission.ACCESS_FINE_LOCATION,
+                                                            Manifest.permission.CALL_PHONE,
+                                                            Manifest.permission.SEND_SMS,
+                                                            Manifest.permission.READ_CONTACTS,
+
+                                                    },
+                                                    1
+                                            );
+                                        }
+                                    })
+                                    .setNegativeButton("Cancel", null);
+                            AlertDialog alertDialog = builder.create();
+                            alertDialog.show();
+                        }
+                        else {
+                            ActivityCompat.requestPermissions(getActivity(),
+                                    new String[]{
+                                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                                            Manifest.permission.CAMERA,
+                                            Manifest.permission.ACCESS_FINE_LOCATION,
+                                            Manifest.permission.CALL_PHONE,
+                                            Manifest.permission.SEND_SMS,
+                                            Manifest.permission.READ_CONTACTS,
+
+                                    },
+                                    1
+                            );
+                        }
+                        }
+                }
+                else {
+                    Toast.makeText(getActivity(),"permission granted default", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         return v;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == 1){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                BottomSheetHome bottomSheethome = new BottomSheetHome();
+                bottomSheethome.show(getActivity().getSupportFragmentManager(), "Bottom Sheet");
+            }
+        }
     }
 
     @Override
