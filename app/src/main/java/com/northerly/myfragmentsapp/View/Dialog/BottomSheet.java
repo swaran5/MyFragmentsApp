@@ -45,6 +45,7 @@ public class BottomSheet extends BottomSheetDialogFragment {
     EditText lastName;
     EditText email;
     EditText phone;
+    Spinner spinner;
     int k;
 
 
@@ -66,7 +67,7 @@ public class BottomSheet extends BottomSheetDialogFragment {
          GetAsyncTask getuser = new GetAsyncTask();
          getuser.execute();
 
-        Spinner spinner = v.findViewById(R.id.spinner);
+        spinner = v.findViewById(R.id.spinner);
         Button addButton = v.findViewById(R.id.addBottomSheet);
         brands = new ArrayList<>();
         brands.add("Select a brand");
@@ -250,6 +251,26 @@ public class BottomSheet extends BottomSheetDialogFragment {
                 lastName.setText(users.get(i).getLastName());
                 email.setText(users.get(i).getEmail());
                 phone.setText(users.get(i).getPhone());
+                switch (users.get(i).getBrand()) {
+                    case "Suzuki":
+                        spinner.setSelection(1);
+                        break;
+                    case "Honda":
+                        spinner.setSelection(2);
+                        break;
+                    case "Tata":
+                        spinner.setSelection(3);
+                        break;
+                    case "Hyundai":
+                        spinner.setSelection(4);
+                        break;
+                    case "Chevrolet":
+                        spinner.setSelection(5);
+                        break;
+                    case "Mahendra":
+                        spinner.setSelection(6);
+                        break;
+                }
             }
     }
 }
