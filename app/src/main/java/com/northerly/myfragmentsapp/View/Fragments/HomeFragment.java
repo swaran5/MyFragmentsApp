@@ -92,12 +92,12 @@ public class HomeFragment extends Fragment {
                     else {
 
                         if(
-                                ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE) ||
-                                        ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.CAMERA) ||
-                                        ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.ACCESS_FINE_LOCATION) ||
-                                        ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.CALL_PHONE) ||
-                                        ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.SEND_SMS) ||
-                                        ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.READ_CONTACTS)
+                           ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE) ||
+                           ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.CAMERA) ||
+                           ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.ACCESS_FINE_LOCATION) ||
+                           ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.CALL_PHONE) ||
+                           ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.SEND_SMS) ||
+                           ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.READ_CONTACTS)
                         ){
                             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                             builder.setTitle("Needs permission")
@@ -105,7 +105,7 @@ public class HomeFragment extends Fragment {
                                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            ActivityCompat.requestPermissions(getActivity(),
+                                            requestPermissions(
                                                     new String[]{
                                                             Manifest.permission.READ_EXTERNAL_STORAGE,
                                                             Manifest.permission.CAMERA,
@@ -124,7 +124,7 @@ public class HomeFragment extends Fragment {
                             alertDialog.show();
                         }
                         else {
-                            ActivityCompat.requestPermissions(getActivity(),
+                            requestPermissions(
                                     new String[]{
                                             Manifest.permission.READ_EXTERNAL_STORAGE,
                                             Manifest.permission.CAMERA,
@@ -152,7 +152,13 @@ public class HomeFragment extends Fragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode == 1){
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if(grantResults[0]+
+               grantResults[1]+
+               grantResults[2]+
+               grantResults[3]+
+               grantResults[4]+
+               grantResults[5]== PackageManager.PERMISSION_GRANTED
+                ) {
                 BottomSheetHome bottomSheethome = new BottomSheetHome();
                 bottomSheethome.show(getActivity().getSupportFragmentManager(), "Bottom Sheet");
             }
