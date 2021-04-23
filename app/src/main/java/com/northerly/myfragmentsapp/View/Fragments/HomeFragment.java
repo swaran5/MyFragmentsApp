@@ -4,9 +4,12 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.style.LeadingMarginSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.northerly.myfragmentsapp.BuildConfig;
 import com.northerly.myfragmentsapp.Model.PojoClass.Data;
 import com.northerly.myfragmentsapp.Model.Endpoints;
 import com.northerly.myfragmentsapp.Model.PojoClass.Root;
@@ -49,8 +53,8 @@ import retrofit2.Response;
 public class HomeFragment extends Fragment {
 
     private MyAdapter myAdapter;
-
     Context context;
+    Boolean permiss = false;
     private RecyclerView recyclerView;
     FloatingActionButton floatingActionButton;
     HomeViewModel homeViewModel;
@@ -76,13 +80,15 @@ public class HomeFragment extends Fragment {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                     if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE)+
                         ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.CAMERA)+
                         ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_FINE_LOCATION)+
                         ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.CALL_PHONE)+
                         ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.SEND_SMS)+
-                        ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.READ_CONTACTS)
+                        ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.READ_CONTACTS)+
+                        ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)
                             == PackageManager.PERMISSION_GRANTED)
                             {
                                 Toast.makeText(getActivity(),"permission granted already", Toast.LENGTH_SHORT).show();
@@ -90,14 +96,14 @@ public class HomeFragment extends Fragment {
                                 bottomSheethome.show(getActivity().getSupportFragmentManager(), "Bottom Sheet");
                     }
                     else {
-
                         if(
                            ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE) ||
                            ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.CAMERA) ||
                            ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.ACCESS_FINE_LOCATION) ||
                            ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.CALL_PHONE) ||
                            ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.SEND_SMS) ||
-                           ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.READ_CONTACTS)
+                           ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.READ_CONTACTS) ||
+                           ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         ){
                             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                             builder.setTitle("Needs permission")
@@ -113,7 +119,7 @@ public class HomeFragment extends Fragment {
                                                             Manifest.permission.CALL_PHONE,
                                                             Manifest.permission.SEND_SMS,
                                                             Manifest.permission.READ_CONTACTS,
-
+                                                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
                                                     },
                                                     1
                                             );
@@ -124,18 +130,38 @@ public class HomeFragment extends Fragment {
                             alertDialog.show();
                         }
                         else {
-                            requestPermissions(
-                                    new String[]{
-                                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                                            Manifest.permission.CAMERA,
-                                            Manifest.permission.ACCESS_FINE_LOCATION,
-                                            Manifest.permission.CALL_PHONE,
-                                            Manifest.permission.SEND_SMS,
-                                            Manifest.permission.READ_CONTACTS,
-
-                                    },
-                                    1
-                            );
+                            if( !ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE)&&
+                                    permiss ||
+                                    !ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.CAMERA) &&
+                                            permiss ||
+                                    !ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.ACCESS_FINE_LOCATION)&&
+                                            permiss ||
+                                    !ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.CALL_PHONE)&&
+                                            permiss ||
+                                    !ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.SEND_SMS) &&
+                                            permiss ||
+                                    !ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.READ_CONTACTS) &&
+                                    permiss ||
+                                    !ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE) &&
+                                    permiss
+                            ){
+                                startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                        Uri.parse("package:" + BuildConfig.APPLICATION_ID)));
+                            }
+                            else {
+                                requestPermissions(
+                                        new String[]{
+                                                Manifest.permission.READ_EXTERNAL_STORAGE,
+                                                Manifest.permission.CAMERA,
+                                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                                Manifest.permission.CALL_PHONE,
+                                                Manifest.permission.SEND_SMS,
+                                                Manifest.permission.READ_CONTACTS,
+                                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                        },
+                                        1
+                                );
+                            }
                         }
                         }
                 }
@@ -157,13 +183,21 @@ public class HomeFragment extends Fragment {
                grantResults[2]+
                grantResults[3]+
                grantResults[4]+
-               grantResults[5]== PackageManager.PERMISSION_GRANTED
+               grantResults[5]+
+               grantResults[6]
+                    == PackageManager.PERMISSION_GRANTED
                 ) {
                 BottomSheetHome bottomSheethome = new BottomSheetHome();
                 bottomSheethome.show(getActivity().getSupportFragmentManager(), "Bottom Sheet");
             }
+            else {
+                if(!permiss) {
+                    Toast.makeText(getActivity(), "Needs Permission For This Operation", Toast.LENGTH_SHORT).show();
+                }
+                permiss = true;
+            }
+            }
         }
-    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

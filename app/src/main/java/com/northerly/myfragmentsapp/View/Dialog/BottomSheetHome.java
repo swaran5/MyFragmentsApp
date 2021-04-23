@@ -29,6 +29,12 @@ import com.northerly.myfragmentsapp.R;
 import com.northerly.myfragmentsapp.View.MainActivity;
 import com.northerly.myfragmentsapp.ViewModel.AddUserViewModel;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,7 +50,10 @@ public class BottomSheetHome extends BottomSheetDialogFragment {
     EditText email;
     EditText phone;
     int k;
+    String line;
     DBHelper DB;
+    String filename;
+    String filepath;
 
 
     @Nullable
@@ -57,6 +66,8 @@ public class BottomSheetHome extends BottomSheetDialogFragment {
         lastName = v.findViewById(R.id.lastnameBottomSheethome);
         email = v.findViewById(R.id.emailBottomSheethome);
         phone = v.findViewById(R.id.phonenumBottomSheethome);
+        filename = "myFile.txt";
+        filepath = "MyFileDir";
         Spinner spinner = v.findViewById(R.id.spinnerhome);
         Button addButton = v.findViewById(R.id.addBottomSheethome);
         DB = new DBHelper(getActivity());
@@ -108,6 +119,20 @@ public class BottomSheetHome extends BottomSheetDialogFragment {
             }
         });
 
+        FileReader fr = null;
+        File myExternalReadFile = new File(getActivity().getExternalFilesDir(filepath),filename);
+        try {
+            fr = new FileReader(myExternalReadFile);
+            BufferedReader br = new BufferedReader(fr);
+            line = br.readLine();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            firstName.setText(line);
+        }
+
         addButton.setOnClickListener(new View.OnClickListener() {
             Calendar calendar = Calendar.getInstance();
             SimpleDateFormat simpleDate = new SimpleDateFormat("dd-MM-yyyy");
@@ -117,6 +142,7 @@ public class BottomSheetHome extends BottomSheetDialogFragment {
             String time = simpleTime.format(calendar.getTime());
             @Override
             public void onClick(View v) {
+
                 ValidateEmail();
                 ValidateName(firstName);
                 ValidateName(lastName);
@@ -146,6 +172,18 @@ public class BottomSheetHome extends BottomSheetDialogFragment {
 
                         new MainActivity().snackBarOnine(relativeLayoutAddUser);
                         dismiss();
+
+                        File myExternalFile = new File(getActivity().getExternalFilesDir(filepath), filename);
+                        FileOutputStream fos = null;
+                        try {
+                            fos = new FileOutputStream(myExternalFile);
+                            fos.write(name.getBytes());
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
                     } else {
                         new MainActivity().snackBarOffline(relativeLayoutAddUser);
                     }
