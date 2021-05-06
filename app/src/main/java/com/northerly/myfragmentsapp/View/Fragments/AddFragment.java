@@ -1,6 +1,7 @@
 package com.northerly.myfragmentsapp.View.Fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ public class AddFragment extends Fragment {
     RelativeLayout relativeLayoutAddUser;
     String name;
     String job;
+    SharedPreferences sp;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -54,6 +56,12 @@ public class AddFragment extends Fragment {
         TextView textId = v.findViewById(R.id.addTextViewId);
         TextView textCreatedOn = v.findViewById(R.id.addTextViewCreatedOn);
         relativeLayoutAddUser = getActivity().findViewById(R.id.relativeLayout);
+        sp = getActivity().getSharedPreferences("User_Details", Context.MODE_PRIVATE);
+
+        if(sp != null){
+            editTextName.setText(sp.getString("name",""));
+            editTextJob.setText(sp.getString("job",""));
+        }
 
         AddUserViewModel addUserViewModel = ViewModelProviders.of(getActivity()).get(AddUserViewModel.class);
 
@@ -72,6 +80,11 @@ public class AddFragment extends Fragment {
              if(isConnected()) {
                  name = String.valueOf(editTextName.getText());
                  job = String.valueOf(editTextJob.getText());
+
+                 SharedPreferences.Editor editor = sp.edit();
+                 editor.putString("name", name);
+                 editor.putString("job", job);
+                 editor.commit();
 
                  myDataSet = new MyDataSet(name, job);
                  addUserViewModel.postUser(myDataSet);

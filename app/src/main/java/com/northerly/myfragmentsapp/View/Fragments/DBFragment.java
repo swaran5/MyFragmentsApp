@@ -1,11 +1,13 @@
 package com.northerly.myfragmentsapp.View.Fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +22,9 @@ import com.northerly.myfragmentsapp.Model.RoomDB.User;
 import com.northerly.myfragmentsapp.Model.RoomDB.UserDao;
 import com.northerly.myfragmentsapp.Model.RoomDB.UserDataBase;
 import com.northerly.myfragmentsapp.R;
+import com.northerly.myfragmentsapp.View.Helper.MyButton;
+import com.northerly.myfragmentsapp.View.Helper.MySwipeHelper;
+import com.northerly.myfragmentsapp.View.Listener.MyButtonClickListener;
 import com.northerly.myfragmentsapp.View.MyDBAdapter;
 import com.northerly.myfragmentsapp.ViewModel.DBViewModel;
 
@@ -55,6 +60,34 @@ public class DBFragment extends Fragment {
                 dbrecyclerview.setLayoutManager(new LinearLayoutManager(context));
                 myDBAdapter = new MyDBAdapter(context, users);
                 dbrecyclerview.setAdapter(myDBAdapter);
+
+                MySwipeHelper swipe = new MySwipeHelper(getActivity(), dbrecyclerview, 200) {
+                    @Override
+                    public void instanciateMyButton(RecyclerView.ViewHolder viewHolder, List<MyButton> buffer) {
+                        buffer.add(new MyButton(getActivity(),
+                                "Delete",
+                                30,
+                                R.drawable.ic_baseline_delete_24,
+                                Color.BLUE,
+                                new MyButtonClickListener() {
+                                    @Override
+                                    public void onClick(int pos) {
+                                        Toast.makeText(getActivity(), "Delete User", Toast.LENGTH_SHORT).show();
+                                    }
+                                }));
+                        buffer.add(new MyButton(getActivity(),
+                                "Delete",
+                                30,
+                                R.drawable.ic_baseline_edit_24,
+                                Color.GREEN,
+                                new MyButtonClickListener() {
+                                    @Override
+                                    public void onClick(int pos) {
+                                        Toast.makeText(getActivity(), "Update User", Toast.LENGTH_SHORT).show();
+                                    }
+                                }));
+                    }
+                };
             }
         });
 

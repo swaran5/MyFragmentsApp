@@ -3,12 +3,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     defaultConfig {
         applicationId "com.northerly.myfragmentsapp"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
@@ -48,4 +48,5 @@ dependencies {
     implementation "androidx.room:room-runtime:2.2.6"
     annotationProcessor "androidx.room:room-compiler:2.2.6"
     testImplementation "androidx.room:room-testing:2.2.6"
+    implementation "androidx.preference:preference:1.1.1"
 }
