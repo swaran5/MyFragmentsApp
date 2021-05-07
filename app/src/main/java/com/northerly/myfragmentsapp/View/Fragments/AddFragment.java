@@ -28,6 +28,7 @@ import com.northerly.myfragmentsapp.Model.Endpoints;
 import com.northerly.myfragmentsapp.Model.PojoClass.MyDataSet;
 import com.northerly.myfragmentsapp.Model.PojoClass.Root;
 import com.northerly.myfragmentsapp.Model.ServiceBuilder;
+import com.northerly.myfragmentsapp.Model.Support.AESUtils;
 import com.northerly.myfragmentsapp.R;
 import com.northerly.myfragmentsapp.View.Dialog.BottomSheet;
 import com.northerly.myfragmentsapp.View.MainActivity;
@@ -57,10 +58,18 @@ public class AddFragment extends Fragment {
         TextView textCreatedOn = v.findViewById(R.id.addTextViewCreatedOn);
         relativeLayoutAddUser = getActivity().findViewById(R.id.relativeLayout);
         sp = getActivity().getSharedPreferences("User_Details", Context.MODE_PRIVATE);
+        AESUtils aesUtils = new AESUtils();
 
         if(sp != null){
-            editTextName.setText(sp.getString("name",""));
-            editTextJob.setText(sp.getString("job",""));
+            try {
+                String dec1 = aesUtils.decrypt(sp.getString("name",""));
+                String dec2 = aesUtils.decrypt(sp.getString("job",""));
+                editTextName.setText(dec1);
+                editTextJob.setText(dec2);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         AddUserViewModel addUserViewModel = ViewModelProviders.of(getActivity()).get(AddUserViewModel.class);
@@ -80,10 +89,19 @@ public class AddFragment extends Fragment {
              if(isConnected()) {
                  name = String.valueOf(editTextName.getText());
                  job = String.valueOf(editTextJob.getText());
+                 String enc1 = null;
+                 String enc2 = null;
+
+                 try {
+                      enc1 = aesUtils.encrypt(name);
+                      enc2 = aesUtils.encrypt(job);
+                 } catch (Exception e) {
+                     e.printStackTrace();
+                 }
 
                  SharedPreferences.Editor editor = sp.edit();
-                 editor.putString("name", name);
-                 editor.putString("job", job);
+                 editor.putString("name", enc1);
+                 editor.putString("job", enc2);
                  editor.commit();
 
                  myDataSet = new MyDataSet(name, job);
