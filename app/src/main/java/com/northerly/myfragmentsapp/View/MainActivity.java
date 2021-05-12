@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 if(isConnected()) {
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.fragment_container, new AddFragment())
+                            .replace(R.id.fragment_container, new AddFragment(context))
                             .commit();
                     return false;
                 }

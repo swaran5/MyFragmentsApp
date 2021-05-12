@@ -1,10 +1,17 @@
 package com.northerly.myfragmentsapp.View.Fragments;
 
+import android.app.AlarmManager;
+import android.app.Dialog;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +19,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
@@ -31,8 +41,13 @@ import com.northerly.myfragmentsapp.Model.ServiceBuilder;
 import com.northerly.myfragmentsapp.Model.Support.AESUtils;
 import com.northerly.myfragmentsapp.R;
 import com.northerly.myfragmentsapp.View.Dialog.BottomSheet;
+import com.northerly.myfragmentsapp.View.Helper.AlertReciever;
+import com.northerly.myfragmentsapp.View.Helper.NotiicationHelper;
 import com.northerly.myfragmentsapp.View.MainActivity;
 import com.northerly.myfragmentsapp.ViewModel.AddUserViewModel;
+
+import java.util.Calendar;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -43,6 +58,14 @@ public class AddFragment extends Fragment {
     String name;
     String job;
     SharedPreferences sp;
+    NotiicationHelper mNotiicationHelper;
+    Context context;
+
+    public AddFragment(Context context){
+        this.context = context;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,6 +82,7 @@ public class AddFragment extends Fragment {
         relativeLayoutAddUser = getActivity().findViewById(R.id.relativeLayout);
         sp = getActivity().getSharedPreferences("User_Details", Context.MODE_PRIVATE);
         AESUtils aesUtils = new AESUtils();
+        mNotiicationHelper = new NotiicationHelper(getActivity());
 
         if(sp != null){
             try {
@@ -104,6 +128,12 @@ public class AddFragment extends Fragment {
                  editor.putString("job", enc2);
                  editor.commit();
 
+                 createTimePicker().show();
+
+//                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                     sendOnChannel1(enc1, enc2);
+//                 }
+
                  myDataSet = new MyDataSet(name, job);
                  addUserViewModel.postUser(myDataSet);
                  new MainActivity().snackBarOnine(relativeLayoutAddUser);
@@ -131,5 +161,41 @@ public class AddFragment extends Fragment {
     private boolean isConnected(){
         ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(getActivity().CONNECTIVITY_SERVICE);
         return connectivityManager.getActiveNetworkInfo()!=null && connectivityManager.getActiveNetworkInfo().isConnectedOrConnecting();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void sendOnChannel1(String title, String message){
+        NotificationCompat.Builder nb = mNotiicationHelper.getChannel1Notification(title, message);
+        mNotiicationHelper.getManager().notify(1, nb.build());
+    }
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void setAlarm(Calendar c){
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getActivity(), AlertReciever.class);
+        intent.putExtra("name", name);
+        intent.putExtra("job", job);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 1, intent, 0);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+    }
+    public TimePickerDialog createTimePicker(){
+        Calendar cal = Calendar.getInstance();
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+        int minutes = cal.get(Calendar.MINUTE);
+        return new TimePickerDialog(getActivity(),
+                new TimePickerDialog.OnTimeSetListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        Calendar c = Calendar.getInstance();
+                        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        c.set(Calendar.MINUTE, minute);
+                        c.set(Calendar.SECOND, 0);
+
+                        setAlarm(c);
+                    }
+                },
+                hour,
+                minutes,
+                DateFormat.is24HourFormat(getActivity()));
     }
 }
