@@ -169,13 +169,14 @@ public class AddFragment extends Fragment {
         mNotiicationHelper.getManager().notify(1, nb.build());
     }
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void setAlarm(Calendar c){
+    public void setAlarm(long c){
+
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getActivity(), AlertReciever.class);
         intent.putExtra("name", name);
         intent.putExtra("job", job);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 1, intent, 0);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c , pendingIntent);
     }
     public TimePickerDialog createTimePicker(){
         Calendar cal = Calendar.getInstance();
@@ -191,7 +192,16 @@ public class AddFragment extends Fragment {
                         c.set(Calendar.MINUTE, minute);
                         c.set(Calendar.SECOND, 0);
 
-                        setAlarm(c);
+                        SharedPreferences shrdPref = getActivity().getSharedPreferences("sharePref", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor prefEditor = shrdPref.edit();
+
+                        long millis = c.getTimeInMillis();
+                        prefEditor.putLong("calender", millis);
+                        prefEditor.putString("name", name);
+                        prefEditor.putString("job", job);
+                        prefEditor.apply();
+
+                        setAlarm(millis);
                     }
                 },
                 hour,
