@@ -1,5 +1,7 @@
 package com.northerly.myfragmentsapp.View.Dialog;
 
+import android.content.Intent;
+import android.content.IntentSender;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.pdf.PdfRenderer;
@@ -36,6 +38,7 @@ import com.northerly.myfragmentsapp.Model.RoomDB.UserDao;
 import com.northerly.myfragmentsapp.Model.RoomDB.UserDataBase;
 import com.northerly.myfragmentsapp.R;
 import com.northerly.myfragmentsapp.View.MainActivity;
+import com.northerly.myfragmentsapp.View.PDFViewerActivity;
 import com.northerly.myfragmentsapp.ViewModel.AddUserViewModel;
 
 import java.io.File;
@@ -176,6 +179,11 @@ public class BottomSheet extends BottomSheetDialogFragment {
                         }
                         if(checkupdate){
                             insert(user);
+                            try {
+                                createPdf(user);
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
                         }
 
                         new MainActivity().snackBarOnine(relativeLayoutAddUser);
@@ -318,10 +326,13 @@ public class BottomSheet extends BottomSheetDialogFragment {
 
         float[] columnWidth = {100f, 100f};
 
-        Paragraph paragraph = new Paragraph("hellooo....world");
+        Paragraph paragraph = new Paragraph("hellooo....world"+ user.getBrand());
 
         document.add(paragraph);
         document.close();
+
+        Intent intent = new Intent(getActivity(), PDFViewerActivity.class);
+        startActivity(intent);
 
     }
 }
