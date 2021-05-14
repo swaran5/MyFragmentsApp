@@ -1,8 +1,13 @@
 package com.northerly.myfragmentsapp.View.Dialog;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.pdf.PdfRenderer;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +26,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
 import com.northerly.myfragmentsapp.Model.PojoClass.MyDataSet;
 import com.northerly.myfragmentsapp.Model.RoomDB.User;
 import com.northerly.myfragmentsapp.Model.RoomDB.UserDao;
@@ -29,6 +38,11 @@ import com.northerly.myfragmentsapp.R;
 import com.northerly.myfragmentsapp.View.MainActivity;
 import com.northerly.myfragmentsapp.ViewModel.AddUserViewModel;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -153,6 +167,11 @@ public class BottomSheet extends BottomSheetDialogFragment {
                             if (alluserlist.get(k).getPhone().equals(phones)) {
                                 updateUser(user);
                                 checkupdate = false;
+                                try {
+                                    createPdf(user);
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                         if(checkupdate){
@@ -171,7 +190,8 @@ public class BottomSheet extends BottomSheetDialogFragment {
             }
         });
 
-        return v;}
+        return v;
+    }
     private Boolean ValidateEmail() {
         String inputemail = email.getText().toString().trim();
         if(inputemail.isEmpty()){
@@ -286,5 +306,22 @@ public class BottomSheet extends BottomSheetDialogFragment {
             userDao.updateUser(users[0]);
             return null;
         }
+    }
+
+    public void createPdf(User user) throws FileNotFoundException{
+        File file = new File(getActivity().getExternalFilesDir("MyPDF"),"/TaxInvoice.pdf");
+        OutputStream outputStream = new FileOutputStream(file);
+        PdfWriter pdfWriter = new PdfWriter(file);
+
+        PdfDocument pdfDocument = new PdfDocument(pdfWriter);
+        Document document = new Document(pdfDocument);
+
+        float[] columnWidth = {100f, 100f};
+
+        Paragraph paragraph = new Paragraph("hellooo....world");
+
+        document.add(paragraph);
+        document.close();
+
     }
 }
