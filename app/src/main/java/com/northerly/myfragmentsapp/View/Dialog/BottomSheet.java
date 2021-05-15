@@ -2,8 +2,11 @@ package com.northerly.myfragmentsapp.View.Dialog;
 
 import android.content.Intent;
 import android.content.IntentSender;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.pdf.PdfRenderer;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
@@ -28,9 +31,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.io.source.ByteArrayOutputStream;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.northerly.myfragmentsapp.Model.PojoClass.MyDataSet;
 import com.northerly.myfragmentsapp.Model.RoomDB.User;
@@ -317,16 +324,22 @@ public class BottomSheet extends BottomSheetDialogFragment {
     }
 
     public void createPdf(User user) throws FileNotFoundException{
-        File file = new File(getActivity().getExternalFilesDir("MyPDF"),"/TaxInvoice.pdf");
-        OutputStream outputStream = new FileOutputStream(file);
-        PdfWriter pdfWriter = new PdfWriter(file);
-
-        PdfDocument pdfDocument = new PdfDocument(pdfWriter);
-        Document document = new Document(pdfDocument);
-
-        Paragraph paragraph = new Paragraph("hellooo....world" + user.getPhone());
-
-        document.add(paragraph);
-        document.close();
+//        File file = new File(getActivity().getExternalFilesDir("MyPDF"),"/TaxInvoice.pdf");
+//        OutputStream outputStream = new FileOutputStream(file);
+//        PdfWriter pdfWriter = new PdfWriter(file);
+//        PdfDocument pdfDocument = new PdfDocument(pdfWriter);
+//        Document document = new Document(pdfDocument);
+//
+//        Drawable d = getActivity().getDrawable(R.drawable.kimobitlity);
+//        Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+//        ByteArrayOutputStream stream = new com.itextpdf.io.source.ByteArrayOutputStream();
+//        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+//        byte[] bitmapData = stream.toByteArray();
+//        ImageData imageData = ImageDataFactory.create(bitmapData);
+//        Image image = new Image(imageData);
+//        document.add(image);
+//
+//
+//        document.close();
     }
 }
