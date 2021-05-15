@@ -1,6 +1,7 @@
 package com.northerly.myfragmentsapp.View.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,8 +21,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.northerly.myfragmentsapp.Model.RoomDB.User;
 import com.northerly.myfragmentsapp.R;
+import com.northerly.myfragmentsapp.View.Dialog.BottomSheetHome;
+import com.northerly.myfragmentsapp.View.Dialog.PdfBottomSheet;
 import com.northerly.myfragmentsapp.View.Helper.SwipeHelper;
 import com.northerly.myfragmentsapp.View.MyDBAdapter;
+import com.northerly.myfragmentsapp.View.PDFViewerActivity;
 import com.northerly.myfragmentsapp.ViewModel.DBViewModel;
 
 import java.util.List;
@@ -57,6 +61,14 @@ public class DBFragment extends Fragment {
                 dbrecyclerview.setLayoutManager(new LinearLayoutManager(context));
                 myDBAdapter = new MyDBAdapter(context, users);
                 dbrecyclerview.setAdapter(myDBAdapter);
+
+                myDBAdapter.setOnItemClickListener(new MyDBAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(String userPhone) {
+                        PdfBottomSheet pdfBottomSheet = new PdfBottomSheet();
+                        pdfBottomSheet.show(getActivity().getSupportFragmentManager(), "PDF Bottom Sheet");
+                    }
+                });
             }
         });
 
@@ -98,4 +110,5 @@ public class DBFragment extends Fragment {
 //            myDBAdapter.notifyDataSetChanged();
 //        }
 //    }
+
 }

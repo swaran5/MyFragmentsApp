@@ -324,15 +324,9 @@ public class BottomSheet extends BottomSheetDialogFragment {
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);
         Document document = new Document(pdfDocument);
 
-        float[] columnWidth = {100f, 100f};
-
-        Paragraph paragraph = new Paragraph("hellooo....world"+ user.getBrand());
+        Paragraph paragraph = new Paragraph("hellooo....world" + user.getPhone());
 
         document.add(paragraph);
         document.close();
-
-        Intent intent = new Intent(getActivity(), PDFViewerActivity.class);
-        startActivity(intent);
-
     }
 }

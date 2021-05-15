@@ -15,6 +15,16 @@ import com.northerly.myfragmentsapp.R;
 import java.util.List;
 
 public class MyDBAdapter extends RecyclerView.Adapter<MyDBAdapter.ViewHolder> {
+
+    public interface OnItemClickListener {
+        void onItemClick(String userPhone);
+    }
+    private MyDBAdapter.OnItemClickListener mListener;
+
+    public void setOnItemClickListener( MyDBAdapter.OnItemClickListener listener){
+        mListener = listener;
+    }
+
     List<User> users;
     User user;
     Context context;
@@ -35,7 +45,7 @@ public class MyDBAdapter extends RecyclerView.Adapter<MyDBAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         user = users.get(position);
-        holder.setData(context ,user);
+        holder.setData(context, user, mListener);
     }
 
     @Override
@@ -63,12 +73,25 @@ public class MyDBAdapter extends RecyclerView.Adapter<MyDBAdapter.ViewHolder> {
 
         }
 
-        void setData(Context context, User user){
+        void setData(Context context, User user, OnItemClickListener listener){
             firstname.setText("First Name : "+user.getFirstName());
             lastname.setText("Last Name : "+user.getLastName());
             email.setText("Email : "+user.getEmail());
             phone.setText("Phone Number : "+user.getPhone());
             brand.setText("Brand : "+user.getBrand());
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null){
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            listener.onItemClick(user.getPhone());
+
+                        }
+                    }
+                }
+            });
 
         }
     }

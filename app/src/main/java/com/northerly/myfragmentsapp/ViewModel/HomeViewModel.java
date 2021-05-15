@@ -11,7 +11,6 @@ import com.northerly.myfragmentsapp.Model.PojoClass.Root;
 import com.northerly.myfragmentsapp.Model.ServiceBuilder;
 import com.northerly.myfragmentsapp.R;
 import com.northerly.myfragmentsapp.View.Fragments.UserFragment;
-import com.northerly.myfragmentsapp.View.MyAdapter;
 
 import java.util.List;
 
