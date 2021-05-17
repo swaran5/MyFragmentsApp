@@ -177,20 +177,10 @@ public class BottomSheet extends BottomSheetDialogFragment {
                             if (alluserlist.get(k).getPhone().equals(phones)) {
                                 updateUser(user);
                                 checkupdate = false;
-                                try {
-                                    createPdf(user);
-                                } catch (FileNotFoundException e) {
-                                    e.printStackTrace();
-                                }
                             }
                         }
                         if(checkupdate){
                             insert(user);
-                            try {
-                                createPdf(user);
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                            }
                         }
 
                         new MainActivity().snackBarOnine(relativeLayoutAddUser);
@@ -323,23 +313,5 @@ public class BottomSheet extends BottomSheetDialogFragment {
         }
     }
 
-    public void createPdf(User user) throws FileNotFoundException{
-//        File file = new File(getActivity().getExternalFilesDir("MyPDF"),"/TaxInvoice.pdf");
-//        OutputStream outputStream = new FileOutputStream(file);
-//        PdfWriter pdfWriter = new PdfWriter(file);
-//        PdfDocument pdfDocument = new PdfDocument(pdfWriter);
-//        Document document = new Document(pdfDocument);
-//
-//        Drawable d = getActivity().getDrawable(R.drawable.kimobitlity);
-//        Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
-//        ByteArrayOutputStream stream = new com.itextpdf.io.source.ByteArrayOutputStream();
-//        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//        byte[] bitmapData = stream.toByteArray();
-//        ImageData imageData = ImageDataFactory.create(bitmapData);
-//        Image image = new Image(imageData);
-//        document.add(image);
-//
-//
-//        document.close();
     }
-}
+

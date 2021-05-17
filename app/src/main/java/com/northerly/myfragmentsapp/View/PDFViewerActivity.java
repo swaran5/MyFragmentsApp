@@ -1,5 +1,6 @@
 package com.northerly.myfragmentsapp.View;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
@@ -7,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.fonts.Font;
 import android.graphics.pdf.PdfRenderer;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
@@ -33,7 +35,12 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TextAlignment;
+import com.northerly.myfragmentsapp.Model.RoomDB.User;
+import com.northerly.myfragmentsapp.Model.RoomDB.UserDao;
+import com.northerly.myfragmentsapp.Model.RoomDB.UserDataBase;
 import com.northerly.myfragmentsapp.R;
+import com.northerly.myfragmentsapp.View.Dialog.BottomSheet;
+import com.northerly.myfragmentsapp.View.Dialog.PdfBottomSheet;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -41,6 +48,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.BitSet;
+import java.util.List;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -50,23 +58,100 @@ public class PDFViewerActivity extends AppCompatActivity {
     PdfRenderer pdfRenderer;
     PdfRenderer.Page currentPage;
     ParcelFileDescriptor parcelFileDescriptor;
+    public UserDao userDao;
+    public UserDataBase userDB;
+    List<User> alluserlist;
+    String fname;
+    String lname;
+    String email;
+    String pnumber;
+    String brand;
+
+    public class GetAsyncTaskPdf extends AsyncTask<Void, Void, List<User>> {
+
+        @Override
+        protected List<User> doInBackground(Void... voids) {
+            return userDao.getAllUsers();
+        }
+
+        @Override
+        protected void onPostExecute(List<User> users) {
+            alluserlist = users;
+
+            for(int i= 0 ; i < alluserlist.size(); i++) {
+                if (alluserlist.get(i).getPhone().equals(pnumber)) {
+                    fname = alluserlist.get(i).getFirstName();
+                    lname = alluserlist.get(i).getLastName();
+                    email = alluserlist.get(i).getEmail();
+                    brand = alluserlist.get(i).getBrand();
+
+                    try {
+                        createpdf();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    imageView = findViewById(R.id.pdfImage);
+                    pAttacher = new PhotoViewAttacher(imageView);
+                    pAttacher.update();
+                    initRender();
+                    renderPage();
+                }
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pdfviewer);
 
-        imageView = findViewById(R.id.pdfImage);
-        pAttacher = new PhotoViewAttacher(imageView);
-        pAttacher.update();
+        Intent intent = getIntent();
+        pnumber = intent.getExtras().getString("pnumber");
+        userDB = UserDataBase.getDataBase(this);
+        userDao = userDB.userDao();
+        GetAsyncTaskPdf getuser = new GetAsyncTaskPdf();
+        getuser.execute();
+    }
 
+    public void initRender(){
         try {
-            createpdf();
+            File file = new File( getExternalFilesDir("MyPDF"),"TaxInvoice.pdf");
+            parcelFileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
+            pdfRenderer = new PdfRenderer(parcelFileDescriptor);
+
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    public void renderPage(){
+
+        currentPage = pdfRenderer.openPage(0);
+        Bitmap bitmap = Bitmap.createBitmap(currentPage.getWidth(), currentPage.getHeight(), Bitmap.Config.ARGB_8888);
+        currentPage.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
+        imageView.setImageBitmap(bitmap);
+    }
+
+    @Override
+    protected void onPause() {
+        if(isFinishing()) {
+            if(currentPage != null){
+                currentPage.close();
+            }
+            try {
+                parcelFileDescriptor.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            pdfRenderer.close();
+        }
+        super.onPause();
+    }
+
     private void createpdf() throws FileNotFoundException {
+
         File file = new File(getExternalFilesDir("MyPDF"),"/TaxInvoice.pdf");
         OutputStream outputStream = new FileOutputStream(file);
         PdfWriter pdfWriter = new PdfWriter(file);
@@ -173,9 +258,9 @@ public class PDFViewerActivity extends AppCompatActivity {
         table3.addCell((new Cell().add(new Paragraph("KAMB1-1576")).setPadding(0)));
 //row3
         table3.addCell((new Cell().add(new Paragraph("Insurance/Cust name")).setPadding(0)));
-        table3.addCell((new Cell().add(new Paragraph("Velu prasanth Mr")).setPadding(0)));
+        table3.addCell((new Cell().add(new Paragraph("Mr. " + fname +" "+ lname )).setPadding(0)));
         table3.addCell((new Cell().add(new Paragraph("Customer Name")).setPadding(0)));
-        table3.addCell((new Cell().add(new Paragraph("Velu prasanth Mr")).setPadding(0)));
+        table3.addCell((new Cell().add(new Paragraph("Mr. " + fname +" "+ lname)).setPadding(0)));
 //row4
         table3.addCell((new Cell().add(new Paragraph("Insurer/Cust GSTIN")).setPadding(0)));
         table3.addCell((new Cell().add(new Paragraph(""))));
@@ -190,7 +275,7 @@ public class PDFViewerActivity extends AppCompatActivity {
         table3.addCell((new Cell().add(new Paragraph("anna nagar,karajar street,5th street,Pattabiram, Chennai\n" +
                 "\n" +
                 "Chennai, Tamil Nadu 600054\n" +
-                "9751159962")).setPadding(0)));
+                pnumber)).setPadding(0)));
 
 
         float[] columnWidth4 = {150,150,150,150};
@@ -204,7 +289,7 @@ public class PDFViewerActivity extends AppCompatActivity {
 //row2
         table4.addCell((new Cell().add(new Paragraph("Vehicle")).setPadding(0)));
         table4.addCell((new Cell().add(new Paragraph("OTHERS PETROL / DIESEL ALL\n" +
-                "TYPES")).setPadding(0)));
+                "TYPES : " + brand)).setPadding(0)));
         table4.addCell((new Cell().add(new Paragraph("Creation")).setPadding(0)));
         table4.addCell((new Cell().add(new Paragraph("2021-05-10 23:06:48")).setPadding(0)));
 //row3
@@ -224,7 +309,7 @@ public class PDFViewerActivity extends AppCompatActivity {
         table4.addCell((new Cell().add(new Paragraph("12000")).setPadding(0)));
 //row6
         table4.addCell((new Cell().add(new Paragraph("Contact person")).setPadding(0)));
-        table4.addCell((new Cell().add(new Paragraph(""))));
+        table4.addCell((new Cell().add(new Paragraph("" + email))));
         table4.addCell((new Cell().add(new Paragraph("Customer state code")).setPadding(0)));
         table4.addCell((new Cell().add(new Paragraph("33")).setPadding(0)));
 //row6
@@ -418,49 +503,5 @@ public class PDFViewerActivity extends AppCompatActivity {
         document.add(table8);
 
         document.close();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        initRender();
-        renderPage();
-    }
-   public void initRender(){
-       try {
-           File file = new File( getExternalFilesDir("MyPDF"),"TaxInvoice.pdf");
-           parcelFileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
-           pdfRenderer = new PdfRenderer(parcelFileDescriptor);
-
-       } catch (FileNotFoundException e) {
-           e.printStackTrace();
-       } catch (IOException e) {
-           e.printStackTrace();
-       }
-   }
-
-    public void renderPage(){
-
-        currentPage = pdfRenderer.openPage(0);
-        Bitmap bitmap = Bitmap.createBitmap(currentPage.getWidth(), currentPage.getHeight(), Bitmap.Config.ARGB_8888);
-        currentPage.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
-        imageView.setImageBitmap(bitmap);
-
-    }
-
-    @Override
-    protected void onPause() {
-        if(isFinishing()) {
-            if(currentPage != null){
-                currentPage.close();
-            }
-            try {
-                parcelFileDescriptor.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            pdfRenderer.close();
-        }
-        super.onPause();
     }
 }

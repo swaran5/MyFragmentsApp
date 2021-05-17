@@ -35,6 +35,9 @@ public class DBFragment extends Fragment {
     Context context;
     MyDBAdapter myDBAdapter;
     MutableLiveData<List<User>> listuser;
+    PdfBottomSheet pdfBottomSheet;
+    Boolean chk = false;
+
 
 
     RecyclerView dbrecyclerview;
@@ -65,8 +68,9 @@ public class DBFragment extends Fragment {
                 myDBAdapter.setOnItemClickListener(new MyDBAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(String userPhone) {
-                        PdfBottomSheet pdfBottomSheet = new PdfBottomSheet();
+                        pdfBottomSheet = new PdfBottomSheet(userPhone);
                         pdfBottomSheet.show(getActivity().getSupportFragmentManager(), "PDF Bottom Sheet");
+                        chk = true;
                     }
                 });
             }
@@ -95,7 +99,15 @@ public class DBFragment extends Fragment {
         return v;
     }
 
-//    public class GettAsync extends AsyncTask<Void, Void, List<User>>{
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (chk) {
+            pdfBottomSheet.dismiss();
+        }
+    }
+
+    //    public class GettAsync extends AsyncTask<Void, Void, List<User>>{
 //
 //        @Override
 //        protected List<User> doInBackground(Void... voids) {
