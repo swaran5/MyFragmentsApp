@@ -158,10 +158,10 @@ public class PDFViewerActivity extends AppCompatActivity {
 
         switch (item.getItemId()){
             case R.id.share :
-//                File pdfFolder = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
-//                String fileName = "TaxInvoice" + ".pdf";
-//                File myFile = new File(pdfFolder.getAbsolutePath() + File.separator + fileName);
-                File myFile = new File( getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),"/TaxInvoice.pdf");
+                File pdfFolder = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+                String fileName = "TaxInvoice" + ".pdf";
+                File myFile = new File(pdfFolder.getAbsolutePath() + File.separator + fileName);
+//                File myFile = new File( getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),"/TaxInvoice.pdf");
                 Intent intentShareFile = new Intent();
                 intentShareFile.setAction(Intent.ACTION_SEND);
                 if(myFile.exists()) {
@@ -177,19 +177,19 @@ public class PDFViewerActivity extends AppCompatActivity {
                 return true;
             case R.id.download :
 
-//                myFile = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
-//
-//                if(myFile.exists()){
-//                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-//                    Uri uri = FileProvider.getUriForFile( this, this.getPackageName() + ".provider", myFile);
-//                    intent.setDataAndType(uri, "resource/folder");
-////                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-//                    startActivity(Intent.createChooser(intent, "open File.."));
-//                }else{
-//                    // method is showing toast
-//                    Toast.makeText(this ,"File does not exist",Toast.LENGTH_LONG).show();
-//                }
-//                return true;
+                myFile = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+
+                if(myFile.exists()){
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    Uri uri = FileProvider.getUriForFile( this, this.getPackageName() + ".storageprovider.documents", myFile);
+                    intent.setDataAndType(uri, "*/*");
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    startActivity(Intent.createChooser(intent, "open File.."));
+                }else{
+                    // method is showing toast
+                    Toast.makeText(this ,"File does not exist",Toast.LENGTH_LONG).show();
+                }
+                return true;
         }
         return true;
     }
