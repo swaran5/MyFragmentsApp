@@ -21,8 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.northerly.myfragmentsapp.Model.RoomDB.User;
 import com.northerly.myfragmentsapp.R;
-import com.northerly.myfragmentsapp.View.Dialog.BottomSheetHome;
-import com.northerly.myfragmentsapp.View.Dialog.PdfBottomSheet;
+import com.northerly.myfragmentsapp.View.Dialog.LoadingDialog;
 import com.northerly.myfragmentsapp.View.Helper.SwipeHelper;
 import com.northerly.myfragmentsapp.View.MyDBAdapter;
 import com.northerly.myfragmentsapp.View.PDFViewerActivity;
@@ -35,10 +34,8 @@ public class DBFragment extends Fragment {
     Context context;
     MyDBAdapter myDBAdapter;
     MutableLiveData<List<User>> listuser;
-    PdfBottomSheet pdfBottomSheet;
     Boolean chk = false;
-
-
+    LoadingDialog loadingDialog;
 
     RecyclerView dbrecyclerview;
     public DBFragment(Context context) {
@@ -68,9 +65,12 @@ public class DBFragment extends Fragment {
                 myDBAdapter.setOnItemClickListener(new MyDBAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(String userPhone) {
-                        pdfBottomSheet = new PdfBottomSheet(userPhone);
-                        pdfBottomSheet.show(getActivity().getSupportFragmentManager(), "PDF Bottom Sheet");
+                        loadingDialog = new LoadingDialog(getActivity());
+                        loadingDialog.startLoadingDialog();
                         chk = true;
+                        Intent intent = new Intent(getActivity(), PDFViewerActivity.class);
+                        intent.putExtra("pnumber", userPhone );
+                        startActivity(intent);
                     }
                 });
             }
@@ -103,7 +103,7 @@ public class DBFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (chk) {
-            pdfBottomSheet.dismiss();
+            loadingDialog.dismissDialog();
         }
     }
 

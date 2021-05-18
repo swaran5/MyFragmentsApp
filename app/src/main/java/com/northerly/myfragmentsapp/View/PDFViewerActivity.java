@@ -2,33 +2,32 @@ package com.northerly.myfragmentsapp.View;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.fonts.Font;
 import android.graphics.pdf.PdfRenderer;
+import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Binder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.io.source.ByteArrayOutputStream;
-import com.itextpdf.kernel.colors.Color;
-import com.itextpdf.kernel.colors.ColorConstants;
-import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
-import com.itextpdf.layout.borders.DashedBorder;
-import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
@@ -39,15 +38,12 @@ import com.northerly.myfragmentsapp.Model.RoomDB.User;
 import com.northerly.myfragmentsapp.Model.RoomDB.UserDao;
 import com.northerly.myfragmentsapp.Model.RoomDB.UserDataBase;
 import com.northerly.myfragmentsapp.R;
-import com.northerly.myfragmentsapp.View.Dialog.BottomSheet;
-import com.northerly.myfragmentsapp.View.Dialog.PdfBottomSheet;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.BitSet;
 import java.util.List;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -115,7 +111,7 @@ public class PDFViewerActivity extends AppCompatActivity {
 
     public void initRender(){
         try {
-            File file = new File( getExternalFilesDir("MyPDF"),"TaxInvoice.pdf");
+            File file = new File( getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),"/TaxInvoice.pdf");
             parcelFileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
             pdfRenderer = new PdfRenderer(parcelFileDescriptor);
 
@@ -150,9 +146,58 @@ public class PDFViewerActivity extends AppCompatActivity {
         super.onPause();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.dot_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.share :
+//                File pdfFolder = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+//                String fileName = "TaxInvoice" + ".pdf";
+//                File myFile = new File(pdfFolder.getAbsolutePath() + File.separator + fileName);
+                File myFile = new File( getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),"/TaxInvoice.pdf");
+                Intent intentShareFile = new Intent();
+                intentShareFile.setAction(Intent.ACTION_SEND);
+                if(myFile.exists()) {
+//                    Uri uri = Uri.fromFile(myFile);
+                    Uri uri = FileProvider.getUriForFile(this, this.getPackageName() + ".provider", myFile);
+                    intentShareFile.setType("application/pdf");
+                    intentShareFile.putExtra(Intent.EXTRA_STREAM, uri);
+                    startActivity(Intent.createChooser(intentShareFile, "Share File.."));
+                }
+                else{
+                    Toast.makeText(this ,"File does not exist",Toast.LENGTH_LONG).show();
+                }
+                return true;
+            case R.id.download :
+
+//                myFile = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+//
+//                if(myFile.exists()){
+//                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+//                    Uri uri = FileProvider.getUriForFile( this, this.getPackageName() + ".provider", myFile);
+//                    intent.setDataAndType(uri, "resource/folder");
+////                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+//                    startActivity(Intent.createChooser(intent, "open File.."));
+//                }else{
+//                    // method is showing toast
+//                    Toast.makeText(this ,"File does not exist",Toast.LENGTH_LONG).show();
+//                }
+//                return true;
+        }
+        return true;
+    }
+
+
     private void createpdf() throws FileNotFoundException {
 
-        File file = new File(getExternalFilesDir("MyPDF"),"/TaxInvoice.pdf");
+        File file = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),"/TaxInvoice.pdf");
         OutputStream outputStream = new FileOutputStream(file);
         PdfWriter pdfWriter = new PdfWriter(file);
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);

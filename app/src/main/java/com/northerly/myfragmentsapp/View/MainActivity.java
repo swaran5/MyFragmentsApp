@@ -1,32 +1,21 @@
 package com.northerly.myfragmentsapp.View;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.northerly.myfragmentsapp.R;
 import com.northerly.myfragmentsapp.View.Dialog.GoBackDialog;
-import com.northerly.myfragmentsapp.View.Dialog.PdfBottomSheet;
 import com.northerly.myfragmentsapp.View.Fragments.AddFragment;
 import com.northerly.myfragmentsapp.View.Fragments.DBFragment;
 import com.northerly.myfragmentsapp.View.Fragments.HomeFragment;
-import com.northerly.myfragmentsapp.View.Fragments.UserFragment;
-import com.northerly.myfragmentsapp.ViewModel.HomeViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
