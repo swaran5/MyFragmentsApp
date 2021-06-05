@@ -1,10 +1,8 @@
-package com.northerly.myfragmentsapp.View.Fragments;
+package com.northerly.myfragmentsapp.view.Fragments;
 
 import android.app.AlarmManager;
-import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,37 +18,26 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.northerly.myfragmentsapp.Model.Endpoints;
 import com.northerly.myfragmentsapp.Model.PojoClass.MyDataSet;
-import com.northerly.myfragmentsapp.Model.PojoClass.Root;
-import com.northerly.myfragmentsapp.Model.ServiceBuilder;
 import com.northerly.myfragmentsapp.Model.Support.AESUtils;
 import com.northerly.myfragmentsapp.R;
-import com.northerly.myfragmentsapp.View.Dialog.BottomSheet;
-import com.northerly.myfragmentsapp.View.Helper.AlertReciever;
-import com.northerly.myfragmentsapp.View.Helper.NotiicationHelper;
-import com.northerly.myfragmentsapp.View.MainActivity;
+import com.northerly.myfragmentsapp.view.Dialog.BottomSheet;
+import com.northerly.myfragmentsapp.view.Helper.AlertReciever;
+import com.northerly.myfragmentsapp.view.Helper.NotiicationHelper;
+import com.northerly.myfragmentsapp.view.MainActivity;
 import com.northerly.myfragmentsapp.ViewModel.AddUserViewModel;
 
 import java.util.Calendar;
-import java.util.Objects;
-
-import retrofit2.Call;
-import retrofit2.Response;
 
 public class AddFragment extends Fragment {
     MyDataSet myDataSet;

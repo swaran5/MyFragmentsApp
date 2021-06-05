@@ -1,4 +1,4 @@
-package com.northerly.myfragmentsapp.View;
+package com.northerly.myfragmentsapp.view;
 
 import android.content.Context;
 import android.view.LayoutInflater;

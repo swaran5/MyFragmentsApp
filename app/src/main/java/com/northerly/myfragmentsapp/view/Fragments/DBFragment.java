@@ -1,4 +1,4 @@
-package com.northerly.myfragmentsapp.View.Fragments;
+package com.northerly.myfragmentsapp.view.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -21,10 +21,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.northerly.myfragmentsapp.Model.RoomDB.User;
 import com.northerly.myfragmentsapp.R;
-import com.northerly.myfragmentsapp.View.Dialog.LoadingDialog;
-import com.northerly.myfragmentsapp.View.Helper.SwipeHelper;
-import com.northerly.myfragmentsapp.View.MyDBAdapter;
-import com.northerly.myfragmentsapp.View.PDFViewerActivity;
+import com.northerly.myfragmentsapp.view.Dialog.LoadingDialog;
+import com.northerly.myfragmentsapp.view.Helper.SwipeHelper;
+import com.northerly.myfragmentsapp.view.MyDBAdapter;
+import com.northerly.myfragmentsapp.view.PDFViewerActivity;
 import com.northerly.myfragmentsapp.ViewModel.DBViewModel;
 
 import java.util.List;

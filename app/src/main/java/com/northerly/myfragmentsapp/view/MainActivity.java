@@ -1,4 +1,4 @@
-package com.northerly.myfragmentsapp.View;
+package com.northerly.myfragmentsapp.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,10 +12,10 @@ import android.widget.RelativeLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.northerly.myfragmentsapp.R;
-import com.northerly.myfragmentsapp.View.Dialog.GoBackDialog;
-import com.northerly.myfragmentsapp.View.Fragments.AddFragment;
-import com.northerly.myfragmentsapp.View.Fragments.DBFragment;
-import com.northerly.myfragmentsapp.View.Fragments.HomeFragment;
+import com.northerly.myfragmentsapp.view.Dialog.GoBackDialog;
+import com.northerly.myfragmentsapp.view.Fragments.AddFragment;
+import com.northerly.myfragmentsapp.view.Fragments.DBFragment;
+import com.northerly.myfragmentsapp.view.Fragments.HomeFragment;
 
 public class MainActivity extends AppCompatActivity {
 

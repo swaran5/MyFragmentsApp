@@ -1,4 +1,4 @@
-package com.northerly.myfragmentsapp.View.Helper;
+package com.northerly.myfragmentsapp.view.Helper;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;

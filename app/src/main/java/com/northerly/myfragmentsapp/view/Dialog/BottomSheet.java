@@ -1,4 +1,4 @@
-package com.northerly.myfragmentsapp.View.Dialog;
+package com.northerly.myfragmentsapp.view.Dialog;
 
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
@@ -24,53 +24,50 @@ import com.northerly.myfragmentsapp.Model.PojoClass.MyDataSet;
 import com.northerly.myfragmentsapp.Model.RoomDB.User;
 import com.northerly.myfragmentsapp.Model.RoomDB.UserDao;
 import com.northerly.myfragmentsapp.Model.RoomDB.UserDataBase;
-import com.northerly.myfragmentsapp.Model.SQliteDB.DBHelper;
 import com.northerly.myfragmentsapp.R;
-import com.northerly.myfragmentsapp.View.MainActivity;
+import com.northerly.myfragmentsapp.view.MainActivity;
 import com.northerly.myfragmentsapp.ViewModel.AddUserViewModel;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class BottomSheetHome extends BottomSheetDialogFragment {
+public class BottomSheet extends BottomSheetDialogFragment {
     List<String> brands;
     List<User> alluserlist;
     public String brand;
+    private UserDao userDao;
+    private UserDataBase userDB;
     EditText firstName;
     EditText lastName;
     EditText email;
     EditText phone;
+    Spinner spinner;
     int k;
-    String line;
-    DBHelper DB;
-    String filename;
-    String filepath;
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.bottom_sheet_home,container, false);
+        View v = inflater.inflate(R.layout.bottom_sheet,container, false);
 
+        AddUserViewModel addUserViewModel = ViewModelProviders.of(getActivity()).get(AddUserViewModel.class);
         RelativeLayout relativeLayoutAddUser = getActivity().findViewById(R.id.relativeLayout);
-        firstName = v.findViewById(R.id.firstnameBottomSheethome);
-        lastName = v.findViewById(R.id.lastnameBottomSheethome);
-        email = v.findViewById(R.id.emailBottomSheethome);
-        phone = v.findViewById(R.id.phonenumBottomSheethome);
-        filename = "myFile.txt";
-        filepath = "MyFileDir";
-        Spinner spinner = v.findViewById(R.id.spinnerhome);
-        Button addButton = v.findViewById(R.id.addBottomSheethome);
-        DB = new DBHelper(getActivity());
+
+        firstName = v.findViewById(R.id.firstnameBottomSheet);
+         lastName = v.findViewById(R.id.lastnameBottomSheet);
+         email = v.findViewById(R.id.emailBottomSheet);
+         phone = v.findViewById(R.id.phonenumBottomSheet);
+         userDB = UserDataBase.getDataBase(getActivity().getApplicationContext());
+         userDao = userDB.userDao();
+
+         GetAsyncTask getuser = new GetAsyncTask();
+         getuser.execute();
+
+        spinner = v.findViewById(R.id.spinner);
+        Button addButton = v.findViewById(R.id.addBottomSheet);
         brands = new ArrayList<>();
         brands.add("Select a brand");
         brands.add("Suzuki");
@@ -119,20 +116,6 @@ public class BottomSheetHome extends BottomSheetDialogFragment {
             }
         });
 
-        FileReader fr = null;
-        File myExternalReadFile = new File(getActivity().getExternalFilesDir(filepath),filename);
-        try {
-            fr = new FileReader(myExternalReadFile);
-            BufferedReader br = new BufferedReader(fr);
-            line = br.readLine();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            firstName.setText(line);
-        }
-
         addButton.setOnClickListener(new View.OnClickListener() {
             Calendar calendar = Calendar.getInstance();
             SimpleDateFormat simpleDate = new SimpleDateFormat("dd-MM-yyyy");
@@ -142,7 +125,6 @@ public class BottomSheetHome extends BottomSheetDialogFragment {
             String time = simpleTime.format(calendar.getTime());
             @Override
             public void onClick(View v) {
-
                 ValidateEmail();
                 ValidateName(firstName);
                 ValidateName(lastName);
@@ -160,30 +142,24 @@ public class BottomSheetHome extends BottomSheetDialogFragment {
                         String emails = String.valueOf(email.getText());
                         String phones = String.valueOf(phone.getText());
 
-                        Boolean updatecheck = DB.updateuserdata(name, job, emails, phones, brand);
+                        MyDataSet myDataSet = new MyDataSet(name, job);
+                        addUserViewModel.postUser(myDataSet);
+                        User user = new User(name , job, emails, phones, brand);
 
-                        if(updatecheck == true){
-                            Toast.makeText(getActivity(),"user added..", Toast.LENGTH_LONG);
+                        Boolean checkupdate = true;
+                        for(int j= 0 ; j < alluserlist.size(); j++) {
+                            k = j;
+                            if (alluserlist.get(k).getPhone().equals(phones)) {
+                                updateUser(user);
+                                checkupdate = false;
+                            }
                         }
-                        else {
-                            DB.insertuserdata(name, job, emails, phones, brand);
-                            Toast.makeText(getActivity(),"user not added..", Toast.LENGTH_LONG);
+                        if(checkupdate){
+                            insert(user);
                         }
 
                         new MainActivity().snackBarOnine(relativeLayoutAddUser);
                         dismiss();
-
-                        File myExternalFile = new File(getActivity().getExternalFilesDir(filepath), filename);
-                        FileOutputStream fos = null;
-                        try {
-                            fos = new FileOutputStream(myExternalFile);
-                            fos.write(name.getBytes());
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
                     } else {
                         new MainActivity().snackBarOffline(relativeLayoutAddUser);
                     }
@@ -194,7 +170,8 @@ public class BottomSheetHome extends BottomSheetDialogFragment {
             }
         });
 
-        return v;}
+        return v;
+    }
     private Boolean ValidateEmail() {
         String inputemail = email.getText().toString().trim();
         if(inputemail.isEmpty()){
@@ -244,4 +221,72 @@ public class BottomSheetHome extends BottomSheetDialogFragment {
         ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(getActivity().CONNECTIVITY_SERVICE);
         return connectivityManager.getActiveNetworkInfo()!=null && connectivityManager.getActiveNetworkInfo().isConnectedOrConnecting();
     }
+    public void insert(User user){
+
+    new InsertAsyncTask().execute(user);
+    }
+
+    private class InsertAsyncTask extends AsyncTask<User, Void ,Void>{
+
+        @Override
+        protected Void doInBackground(User... users) {
+            userDao.insert(users[0]);
+            return null;
+        }
+    }
+
+    public class GetAsyncTask extends AsyncTask<Void, Void, List<User>>{
+
+        @Override
+        protected List<User> doInBackground(Void... voids) {
+            return userDao.getAllUsers();
+        }
+
+    @Override
+    protected void onPostExecute(List<User> users) {
+            alluserlist = users;
+            if(users.size() != 0) {
+                int i = users.size() - 1;
+                firstName.setText(users.get(i).getFirstName());
+                lastName.setText(users.get(i).getLastName());
+                email.setText(users.get(i).getEmail());
+                phone.setText(users.get(i).getPhone());
+                switch (users.get(i).getBrand()) {
+                    case "Suzuki":
+                        spinner.setSelection(1);
+                        break;
+                    case "Honda":
+                        spinner.setSelection(2);
+                        break;
+                    case "Tata":
+                        spinner.setSelection(3);
+                        break;
+                    case "Hyundai":
+                        spinner.setSelection(4);
+                        break;
+                    case "Chevrolet":
+                        spinner.setSelection(5);
+                        break;
+                    case "Mahendra":
+                        spinner.setSelection(6);
+                        break;
+                }
+            }
+    }
 }
+    public void updateUser(User user){
+
+        new UpdateAsyncTask().execute(user);
+    }
+    private class UpdateAsyncTask extends AsyncTask<User, Void, Void>
+    {
+
+        @Override
+        protected Void doInBackground(User... users) {
+            userDao.updateUser(users[0]);
+            return null;
+        }
+    }
+
+    }
+

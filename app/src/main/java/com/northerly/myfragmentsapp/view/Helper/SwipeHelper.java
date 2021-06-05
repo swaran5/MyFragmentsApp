@@ -1,4 +1,4 @@
-package com.northerly.myfragmentsapp.View.Helper;
+package com.northerly.myfragmentsapp.view.Helper;
 
 import android.content.Context;
 import android.graphics.Canvas;

@@ -1,6 +1,5 @@
-package com.northerly.myfragmentsapp.View;
+package com.northerly.myfragmentsapp.view;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,8 +15,6 @@ import com.northerly.myfragmentsapp.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-
-import static com.northerly.myfragmentsapp.R.layout.item_view;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
 

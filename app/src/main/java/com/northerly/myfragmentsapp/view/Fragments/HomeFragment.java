@@ -1,4 +1,4 @@
-package com.northerly.myfragmentsapp.View.Fragments;
+package com.northerly.myfragmentsapp.view.Fragments;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -9,14 +9,12 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.text.style.LeadingMarginSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.Toast;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -24,8 +22,6 @@ import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,26 +31,21 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.northerly.myfragmentsapp.BuildConfig;
 import com.northerly.myfragmentsapp.Model.PojoClass.Data;
-import com.northerly.myfragmentsapp.Model.Endpoints;
-import com.northerly.myfragmentsapp.Model.PojoClass.Root;
-import com.northerly.myfragmentsapp.Model.ServiceBuilder;
 import com.northerly.myfragmentsapp.R;
-import com.northerly.myfragmentsapp.View.Dialog.BottomSheet;
-import com.northerly.myfragmentsapp.View.Dialog.BottomSheetHome;
-import com.northerly.myfragmentsapp.View.MainActivity;
-import com.northerly.myfragmentsapp.View.MyAdapter;
+import com.northerly.myfragmentsapp.view.Dialog.BottomSheetHome;
+import com.northerly.myfragmentsapp.view.MyAdapter;
 import com.northerly.myfragmentsapp.ViewModel.HomeViewModel;
 import com.northerly.myfragmentsapp.databinding.FragmentHomeBinding;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Response;
-
 public class HomeFragment extends Fragment {
 
     private MyAdapter myAdapter;
+    public LinearLayoutManager manager;
     Context context;
     Boolean permiss = false;
     private RecyclerView recyclerView;
@@ -62,6 +53,10 @@ public class HomeFragment extends Fragment {
     HomeViewModel homeViewModel;
     public FragmentHomeBinding binding;
     BottomNavigationView bottomNavigationView;
+    int page = 1;
+    List<Data> fullusers = new ArrayList<Data>();
+    int currentItems, totalItems, scrollOutItems;
+    boolean isScrolling = false;
     public HomeFragment(Context context) {
         this.context = context;
     }
@@ -77,10 +72,11 @@ public class HomeFragment extends Fragment {
         binding.setIsLoading(true);
 
         homeViewModel = ViewModelProviders.of((FragmentActivity) context).get(HomeViewModel.class);
-        homeViewModel.getUsers("1");
+        homeViewModel.getUsers(String.valueOf(page));
         recyclerView = v.findViewById(R.id.recyclerView);
         floatingActionButton = v.findViewById(R.id.floatingActionButtonhome);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        manager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(manager);
         bottomNavigationView = getActivity().findViewById(R.id.bottm_navigator);
         bottomNavigationView.setSelectedItemId(R.id.home_button);
 
@@ -179,6 +175,35 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull @NotNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+                    isScrolling = true;
+                }
+            }
+
+            @Override
+            public void onScrolled(@NonNull @NotNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                currentItems = manager.getChildCount();
+                totalItems = manager.getItemCount();
+                scrollOutItems = manager.findFirstVisibleItemPosition();
+
+                if(isScrolling && (totalItems == currentItems + scrollOutItems)){
+                    isScrolling = false;
+                    page = page + 1;
+                    if(homeViewModel.totalpage >= page) {
+                        binding.setIsBottomLoading(true);
+                        homeViewModel.getUsers(String.valueOf(page));
+                    }
+                }
+            }
+        });
+        myAdapter = new MyAdapter(getActivity(), fullusers);
+        recyclerView.setAdapter(myAdapter);
         return v;
     }
 
@@ -215,11 +240,11 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void onChanged(List<Data> data) {
 
-                    myAdapter = new MyAdapter(context,data);
-                    recyclerView.setAdapter(myAdapter);
+                    fullusers.addAll(data);
                     myAdapter.notifyDataSetChanged();
 
                     binding.setIsLoading(false);
+                    binding.setIsBottomLoading(false);
 
                     myAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
                         @Override

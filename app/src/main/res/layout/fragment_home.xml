@@ -11,6 +11,10 @@
         <variable
             name="isLoading"
             type="Boolean" />
+
+        <variable
+            name="isBottomLoading"
+            type="Boolean" />
     </data>
 
     <RelativeLayout
@@ -36,9 +40,21 @@
             android:src="@android:drawable/ic_input_add" />
 
         <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="220dp"
             android:id="@+id/progressBarVisible"
             layout="@layout/custom_dailog"
             android:visibility="@{isLoading ? View.VISIBLE : View.GONE}" />
+
+        <include
+            android:id="@+id/progressBarBottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            layout="@layout/custom_dailog"
+            android:visibility="@{isBottomLoading ? View.VISIBLE : View.GONE}"
+            />
 
     </RelativeLayout>
 </layout>

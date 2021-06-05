@@ -1,11 +1,10 @@
-package com.northerly.myfragmentsapp.View.Dialog;
+package com.northerly.myfragmentsapp.view.Dialog;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.view.LayoutInflater;
 
 import com.northerly.myfragmentsapp.R;
-import com.northerly.myfragmentsapp.View.Fragments.DBFragment;
 
 public class LoadingDialog {
     public Activity activity;

@@ -23,14 +23,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyFragmentsApp">
-        <activity android:name=".View.MainActivity">
+        <activity android:name=".view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".View.PDFViewerActivity">
+        <activity android:name=".view.PDFViewerActivity">
         </activity>
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -56,9 +56,9 @@
             </intent-filter>
         </provider>
         <receiver
-            android:name=".View.Helper.AlertReciever"
+            android:name=".view.Helper.AlertReciever"
             />
-        <receiver android:name=".View.Helper.BootReceiver">
+        <receiver android:name=".view.Helper.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <category android:name="android.intent.category.DEFAULT"/>

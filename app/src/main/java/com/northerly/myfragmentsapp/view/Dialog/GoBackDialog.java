@@ -1,4 +1,4 @@
-package com.northerly.myfragmentsapp.View.Dialog;
+package com.northerly.myfragmentsapp.view.Dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,10 +8,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
-
-import com.northerly.myfragmentsapp.R;
-import com.northerly.myfragmentsapp.View.Fragments.HomeFragment;
-import com.northerly.myfragmentsapp.View.Fragments.UserFragment;
 
 public class GoBackDialog extends AppCompatDialogFragment {
 
