@@ -204,6 +204,8 @@ public class HomeFragment extends Fragment {
         });
         myAdapter = new MyAdapter(getActivity(), fullusers);
         recyclerView.setAdapter(myAdapter);
+        myAdapter.notifyDataSetChanged();
+
         return v;
     }
 
@@ -241,7 +243,6 @@ public class HomeFragment extends Fragment {
                 public void onChanged(List<Data> data) {
 
                     fullusers.addAll(data);
-                    myAdapter.notifyDataSetChanged();
 
                     binding.setIsLoading(false);
                     binding.setIsBottomLoading(false);
