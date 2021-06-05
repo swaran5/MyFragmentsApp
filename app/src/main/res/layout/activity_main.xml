@@ -15,8 +15,6 @@
     android:layout_above="@id/bottm_navigator"
     android:orientation="vertical" />
 
-    />
-
 <com.google.android.material.bottomnavigation.BottomNavigationView
     android:id="@+id/bottm_navigator"
     android:layout_width="match_parent"

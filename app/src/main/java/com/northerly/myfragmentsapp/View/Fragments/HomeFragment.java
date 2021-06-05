@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
@@ -43,6 +44,7 @@ import com.northerly.myfragmentsapp.View.Dialog.BottomSheetHome;
 import com.northerly.myfragmentsapp.View.MainActivity;
 import com.northerly.myfragmentsapp.View.MyAdapter;
 import com.northerly.myfragmentsapp.ViewModel.HomeViewModel;
+import com.northerly.myfragmentsapp.databinding.FragmentHomeBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +60,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerView;
     FloatingActionButton floatingActionButton;
     HomeViewModel homeViewModel;
+    public FragmentHomeBinding binding;
     BottomNavigationView bottomNavigationView;
     public HomeFragment(Context context) {
         this.context = context;
@@ -66,7 +69,12 @@ public class HomeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_home, container, false);
+
+        binding = DataBindingUtil.inflate(
+                inflater, R.layout.fragment_home, container, false);
+        View v = binding.getRoot();
+
+        binding.setIsLoading(true);
 
         homeViewModel = ViewModelProviders.of((FragmentActivity) context).get(HomeViewModel.class);
         homeViewModel.getUsers("1");
@@ -210,6 +218,8 @@ public class HomeFragment extends Fragment {
                     myAdapter = new MyAdapter(context,data);
                     recyclerView.setAdapter(myAdapter);
                     myAdapter.notifyDataSetChanged();
+
+                    binding.setIsLoading(false);
 
                     myAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
                         @Override
