@@ -18,21 +18,22 @@ public class HomeViewModel extends ViewModel {
     public MutableLiveData<List<Data>> Users = new MutableLiveData<>();
     public List<Data> User = new ArrayList<>();
     public int totalpage = 1;
+    public int page = 1;
     Endpoints request = ServiceBuilder.createService(Endpoints.class);
 
 
     public MutableLiveData<List<Data>> getUsers(String page){
-        if(Integer.valueOf(page) <=  totalpage) {
-
+        if(this.page <=  totalpage) {
+            this.page = this.page+1;
             Call<Root> call = request.getUsers(page);
             call.enqueue(new retrofit2.Callback<Root>() {
                 @Override
                 public void onResponse(Call<Root> call, Response<Root> response) {
 
-//            User.addAll(response.body().getData());
+            User.addAll(response.body().getData());
                     totalpage = response.body().getTotal_pages();
-                    Users.postValue(response.body().getData());
-//            Users.postValue(User);
+//                    Users.postValue(response.body().getData());
+            Users.postValue(User);
 
                 }
 

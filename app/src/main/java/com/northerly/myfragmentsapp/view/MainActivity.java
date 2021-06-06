@@ -1,6 +1,9 @@
 package com.northerly.myfragmentsapp.view;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -16,6 +19,7 @@ import com.northerly.myfragmentsapp.view.Dialog.GoBackDialog;
 import com.northerly.myfragmentsapp.view.Fragments.AddFragment;
 import com.northerly.myfragmentsapp.view.Fragments.DBFragment;
 import com.northerly.myfragmentsapp.view.Fragments.HomeFragment;
+import com.northerly.myfragmentsapp.view.Fragments.UserFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -65,11 +69,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(isConnected()) {
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.fragment_container, new AddFragment(context))
-                            .commit();
-                    return false;
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragment_container, new AddFragment(context))
+                                .addToBackStack(null)
+                                .commit();
+                        return true;
+                    }
                 }
                 else{
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -83,14 +91,17 @@ public class MainActivity extends AppCompatActivity {
         bottomNav.setItemOnTouchListener(R.id.user_DB, new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
                     getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.fragment_container, new DBFragment(context))
+                            .addToBackStack(null)
                             .commit();
 
-                return false;
-            }
+                    return true;
+                }
+            return true;}
         });
 
         if(isConnected()) {

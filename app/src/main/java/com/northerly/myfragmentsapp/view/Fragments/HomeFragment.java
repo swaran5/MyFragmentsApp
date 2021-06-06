@@ -65,8 +65,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_home, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
         View v = binding.getRoot();
 
         binding.setIsLoading(true);
@@ -174,15 +173,14 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
+        myAdapter = new MyAdapter(getActivity(), fullusers);
+        recyclerView.setAdapter(myAdapter);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull @NotNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-
-                if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
-                    isScrolling = true;
-                }
+                isScrolling = true;
             }
 
             @Override
@@ -191,20 +189,16 @@ public class HomeFragment extends Fragment {
                 currentItems = manager.getChildCount();
                 totalItems = manager.getItemCount();
                 scrollOutItems = manager.findFirstVisibleItemPosition();
-
-                if(isScrolling && (totalItems == currentItems + scrollOutItems)){
-                    isScrolling = false;
-                    page = page + 1;
-                    if(homeViewModel.totalpage >= page) {
+                if(isScrolling && totalItems == scrollOutItems + currentItems){
+                    if(homeViewModel.page <= homeViewModel.totalpage){
+                        page = page+1;
+                        fullusers.clear();
                         binding.setIsBottomLoading(true);
                         homeViewModel.getUsers(String.valueOf(page));
                     }
                 }
             }
         });
-        myAdapter = new MyAdapter(getActivity(), fullusers);
-        recyclerView.setAdapter(myAdapter);
-        myAdapter.notifyDataSetChanged();
 
         return v;
     }
@@ -242,7 +236,11 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void onChanged(List<Data> data) {
 
-                    fullusers.addAll(data);
+                    if(fullusers.isEmpty()) {
+                        if(data.size() <= homeViewModel.totalpage * 6)
+                        fullusers.addAll(data);
+                        myAdapter.notifyDataSetChanged();
+                    }
 
                     binding.setIsLoading(false);
                     binding.setIsBottomLoading(false);
@@ -256,7 +254,7 @@ public class HomeFragment extends Fragment {
 
                             UserFragment userFragment = new UserFragment(context);
                             userFragment.setArguments(bundle);
-                            getFragmentManager()
+                            getActivity().getSupportFragmentManager()
                                     .beginTransaction()
                                     .replace(R.id.fragment_container, userFragment)
                                     .addToBackStack(null)

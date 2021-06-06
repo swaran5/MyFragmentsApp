@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.northerly.myfragmentsapp.Model.RoomDB.User;
 import com.northerly.myfragmentsapp.R;
 import com.northerly.myfragmentsapp.view.Dialog.LoadingDialog;
@@ -36,7 +37,7 @@ public class DBFragment extends Fragment {
     MutableLiveData<List<User>> listuser;
     Boolean chk = false;
     LoadingDialog loadingDialog;
-
+    BottomNavigationView bottomNavigationView;
     RecyclerView dbrecyclerview;
     public DBFragment(Context context) {
         this.context = context;
@@ -46,6 +47,8 @@ public class DBFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        bottomNavigationView = getActivity().findViewById(R.id.bottm_navigator);
+        bottomNavigationView.setSelectedItemId(R.id.user_DB);
         View v = inflater.inflate(R.layout.fragmet_user_db, container, false);
 
         DBViewModel dbViewModel = ViewModelProviders.of(getActivity()).get(DBViewModel.class);
